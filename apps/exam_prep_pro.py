@@ -980,6 +980,7 @@ def show_home():
     """Home page with learning paths"""
     st.set_page_config(page_title="Exam Prep Pro", page_icon="🧪", layout="wide")
 
+    # ============ HEADER WITH USER INFO ============
     col1, col2, col3 = st.columns([2, 1, 1])
     with col1:
         st.title("🧪 SCIENCE EXAM PREP PRO")
@@ -997,9 +998,24 @@ def show_home():
                 st.session_state.user_name = None
                 st.rerun()
 
-    st.markdown("---")
+    # ============ ATTRACTIVE WELCOME BANNER ============
+    user_name = st.session_state.user_name
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 10px;
+                padding: 30px;
+                text-align: center;
+                color: white;
+                margin: 20px 0;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h1 style="margin: 0; font-size: 2.5em;">🌟 Welcome, {user_name}! 🌟</h1>
+        <p style="margin: 10px 0 0 0; font-size: 1.2em; opacity: 0.95;">
+            🚀 Ready to ace your PSLE Science exam? Let's get started!
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    # Stats
+    # ============ KEY STATS ============
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.metric("Total Attempted", st.session_state.total_questions_attempted)
@@ -1015,21 +1031,56 @@ def show_home():
         st.metric("⏱️ Exam Time", "45 min", "Official Format")
 
     st.markdown("---")
-    st.write("## 🎯 Choose Your Learning Path")
 
-    # Three main modes
-    col1, col2, col3 = st.columns(3)
+    # ============ LEARNING PATHS ============
+    st.markdown("""
+    <div style="text-align: center; margin: 30px 0 20px 0;">
+        <h2 style="color: #667eea; margin: 0;">🎯 Choose Your Learning Path</h2>
+        <p style="color: #666; margin-top: 5px;">Pick the learning style that works best for you</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Three main modes with enhanced styling
+    col1, col2, col3 = st.columns(3, gap="large")
 
     with col1:
-        st.markdown("### 📖 **Topic Mastery**")
-        st.write("Learn one topic at a time. No timer, focus on understanding.")
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                    border-radius: 10px;
+                    padding: 20px;
+                    text-align: center;
+                    color: white;
+                    min-height: 200px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0;">📖 Topic Mastery</h3>
+                <p>Learn one topic at a time. No timer, focus on understanding.</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         if st.button("Start Topic Practice →", key="topic_btn", use_container_width=True):
             st.session_state.mode = 'topic_select'
             st.rerun()
 
     with col2:
-        st.markdown("### 🎯 **Mock Exam**")
-        st.write("Full 45-minute realistic test. All 25+ MCQ questions.")
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                    border-radius: 10px;
+                    padding: 20px;
+                    text-align: center;
+                    color: white;
+                    min-height: 200px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0;">🎯 Mock Exam</h3>
+                <p>Full 45-minute realistic test. All 25+ MCQ questions.</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         if st.button("Start Mock Exam →", key="mock_btn", use_container_width=True):
             st.session_state.mode = 'mock_exam'
             st.session_state.exam_started = True
@@ -1041,18 +1092,54 @@ def show_home():
             st.rerun()
 
     with col3:
-        st.markdown("### 📊 **Performance Review**")
-        st.write("Analyze your strengths and weaknesses.")
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+                    border-radius: 10px;
+                    padding: 20px;
+                    text-align: center;
+                    color: white;
+                    min-height: 200px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;">
+            <div>
+                <h3 style="margin-top: 0;">📊 Performance Review</h3>
+                <p>Analyze your strengths and weaknesses.</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         if st.button("View Analytics →", key="analytics_btn", use_container_width=True):
             st.session_state.mode = 'analytics'
             st.rerun()
 
     st.markdown("---")
-    st.write("## 🧠 CHALLENGE YOURSELF!")
 
-    st.markdown("### 🎯 **Challenge to Aanya**")
-    st.write("🧠 **PSLE-Style Brain Drainers** - Tricky questions with similar-looking options!")
-    st.write("Test your DEEPER understanding with confusing questions designed to catch misconceptions.")
+    # ============ CHALLENGE SECTION ============
+    st.markdown("""
+    <div style="text-align: center; margin: 30px 0 20px 0;">
+        <h2 style="color: #764ba2; margin: 0;">🧠 Challenge Yourself!</h2>
+        <p style="color: #666; margin-top: 5px;">Test your deeper understanding with PSLE brain drainers</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+                border-radius: 10px;
+                padding: 25px;
+                text-align: center;
+                color: white;
+                margin: 20px 0;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <h3 style="margin-top: 0; font-size: 1.8em;">🎯 Challenge to {user_name}!</h3>
+        <p style="font-size: 1.1em; margin: 10px 0;">
+            🧠 <strong>PSLE-Style Brain Drainers</strong> - Tricky questions with similar-looking options!
+        </p>
+        <p style="margin: 10px 0 0 0; opacity: 0.95;">
+            Test your DEEPER understanding with confusing questions designed to catch misconceptions.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
     if st.button("Start Brain Drain Challenge →", key="challenge_btn", use_container_width=True):
         st.session_state.mode = 'challenge'
         st.session_state.challenge_question_idx = 0
@@ -1190,7 +1277,7 @@ def show_practice_mode():
                 if is_correct and not question_already_answered:
                     st.success("✅ CORRECT!")
                     st.session_state.score += 1
-                    MalteseDogFeedback.show_happy_maltese("Aanya")
+                    MalteseDogFeedback.show_happy_maltese(st.session_state.user_name)
                 elif is_correct and question_already_answered:
                     st.success("✅ CORRECT! (Already submitted)")
                 else:
@@ -1459,12 +1546,12 @@ def show_mock_results():
 
     if percentage >= 80:
         st.success("🎉 EXCELLENT! You're ready for the real exam!")
-        MalteseDogFeedback.show_happy_maltese("Aanya")
+        MalteseDogFeedback.show_happy_maltese(st.session_state.user_name)
     elif percentage >= 70:
         st.info("👍 Good score! Focus on weak areas for final polish.")
     else:
         st.warning("⚠️ Keep practicing! Review weak topics before exam.")
-        MalteseDogFeedback.show_sad_maltese("Aanya")
+        MalteseDogFeedback.show_sad_maltese(st.session_state.user_name)
 
     st.markdown("---")
     st.write("### Summary Table")
@@ -1634,7 +1721,7 @@ def show_challenge_mode():
                 if is_correct and not question_already_answered:
                     st.session_state.challenge_score = st.session_state.get('challenge_score', 0) + 1
                     st.success("🎉 CORRECT! You found the right answer among the tricky options!")
-                    MalteseDogFeedback.show_happy_maltese("Aanya")
+                    MalteseDogFeedback.show_happy_maltese(st.session_state.user_name)
                 elif is_correct and question_already_answered:
                     st.success("✅ Correct! (Already submitted)")
                 else:
@@ -1709,7 +1796,7 @@ def show_challenge_results(questions):
 
     if percentage >= 80:
         st.success("🎉 AMAZING! You have a sharp mind and read questions carefully!")
-        MalteseDogFeedback.show_happy_maltese("Aanya")
+        MalteseDogFeedback.show_happy_maltese(st.session_state.user_name)
     elif percentage >= 70:
         st.info("👍 Great job! These were PSLE-level tricky questions!")
     else:
