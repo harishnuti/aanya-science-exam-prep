@@ -940,26 +940,47 @@ def display_question(question, num, total):
     st.caption(f"📌 **Concept**: {question['concept']} | **Ref**: {question['ref']} | **Difficulty**: {difficulty.upper()}")
 
     if question['type'] == 'MCQ':
+        # BUG FIX: Restore previous answer if it exists (so students can't cheat by going back)
+        previous_answer = None
+        previous_confidence = 3
+        if question['id'] in st.session_state.answers:
+            previous_answer = st.session_state.answers[question['id']].get('user_answer')
+            previous_confidence = st.session_state.answers[question['id']].get('confidence', 3)
+
+        # Find index of previous answer in options (if exists)
+        answer_index = 0
+        if previous_answer and previous_answer in question['options']:
+            answer_index = question['options'].index(previous_answer)
+
         answer = st.radio(
             "Select your answer:",
             question['options'],
+            index=answer_index,  # ← RESTORED: Show previous selection
             key=f"q_{question['id']}"
         )
         confidence = st.slider(
             "How confident are you? (1=Guess, 5=Very Sure)",
-            1, 5, 3,
+            1, 5, previous_confidence,  # ← RESTORED: Show previous confidence
             key=f"conf_{question['id']}"
         )
         return answer, confidence
     else:
+        # BUG FIX: Restore previous answer for text input
+        previous_answer = ""
+        previous_confidence = 3
+        if question['id'] in st.session_state.answers:
+            previous_answer = st.session_state.answers[question['id']].get('user_answer', "")
+            previous_confidence = st.session_state.answers[question['id']].get('confidence', 3)
+
         answer = st.text_area(
             "Write your answer (2-3 sentences with key terms):",
+            value=previous_answer,  # ← RESTORED: Show previous answer
             key=f"q_{question['id']}",
             height=120
         )
         confidence = st.slider(
             "How confident are you?",
-            1, 5, 3,
+            1, 5, previous_confidence,  # ← RESTORED: Show previous confidence
             key=f"conf_{question['id']}"
         )
         return answer, confidence
@@ -1739,16 +1760,30 @@ def show_challenge_mode():
     st.markdown(f"### Q{current_idx + 1}: {question['q']}")
     st.caption(f"📌 **Concept**: {question['concept']} | **Difficulty**: HARD ⚠️ | **Ref**: {question['ref']}")
 
+    # BUG FIX: Restore previous answer if it exists (so students can't cheat by going back)
+    previous_answer = None
+    previous_confidence = 2
+    challenge_key = f"challenge_{question['id']}"
+    if challenge_key in st.session_state:
+        previous_answer = st.session_state[challenge_key].get('user_answer')
+        previous_confidence = st.session_state[challenge_key].get('confidence', 2)
+
+    # Find index of previous answer in options (if exists)
+    answer_index = 0
+    if previous_answer and previous_answer in question['options']:
+        answer_index = question['options'].index(previous_answer)
+
     # Options with visual styling
     answer = st.radio(
         "Select your answer (Read carefully - all look similar!):",
         question['options'],
+        index=answer_index,  # ← RESTORED: Show previous selection
         key=f"ch_q_{question['id']}"
     )
 
     confidence = st.slider(
         "How confident are you? (1=Just guessing, 5=Very sure)",
-        1, 5, 2,
+        1, 5, previous_confidence,  # ← RESTORED: Show previous confidence
         key=f"ch_conf_{question['id']}"
     )
 
@@ -1765,8 +1800,7 @@ def show_challenge_mode():
     with col2:
         if st.button("✓ Check Answer", use_container_width=True, key="ch_check"):
             if answer:
-                # Check if question already answered
-                challenge_key = f"challenge_{question['id']}"
+                # Check if question already answered (challenge_key already defined above)
                 question_already_answered = challenge_key in st.session_state
 
                 is_correct = answer == question['answer']
