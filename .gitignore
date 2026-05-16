@@ -1,0 +1,125 @@
+# 📦 Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 📁 IDE & Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# 🔐 Sensitive Files
+.env
+.env.local
+.env.*.local
+secrets.json
+credentials.json
+*.key
+*.pem
+
+# 💾 Runtime Data
+data/
+*.db
+*.sqlite
+*.sqlite3
+*.log
+logs/
+
+# 📚 Large Documentation (not version controlled)
+resources/textbooks/*.pdf
+resources/textbooks/*.docx
+resources/textbooks/*.xlsx
+*.pdf
+
+# 🎯 Streamlit Cache & Cache Files
+.streamlit/
+.cache/
+*.cache
+streamlit_cache/
+.streamlitrc
+
+# 📊 Jupyter Notebooks & Interactive
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+*.ipynb
+
+# 🗂️ OS Files
+Thumbs.db
+.directory
+.Spotlight-V100
+.Trashes
+
+# 🧪 Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 📦 Package Managers
+poetry.lock
+pipenv.lock
+
+# 🔧 Project Specific
+data/app.db
+data/*.db
+*.db-journal
+resources/textbooks/
+__MACOSX/
+
+# 🚀 Deployment Artifacts
+dist/
+build/
+*.egg-info/
+
+# 💡 Node (if using npm for frontend tools)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# 🎬 Media Files (keep code focused)
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+
+# 📋 Temporary Files
+*.tmp
+*.bak
+*.backup
+*.old
+~*
+
+# 🔄 Version Control
+.git/
+.gitkeep
+
+# ☁️ Cloud Provider Files
+.aws/
+.gcp/
+azure-pipelines.yml
+

@@ -1,4 +1,4 @@
-# 🌟 Aanya's Science Quest - Phase 2
+# 🧪 AANYA'S SCIENCE EXAM PREP PRO
 
 An enhanced science learning application for Aanya (Primary 5, Waterway Primary School, Singapore) featuring:
 
