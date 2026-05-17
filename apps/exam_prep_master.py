@@ -35,6 +35,56 @@ init_database()
 # Database path (consistent with database.py)
 DB_PATH = Path(__file__).parent.parent / "src" / "data" / "app.db"
 
+# ==================== CHAPTER FLASHCARDS & MATCHING PAIRS ====================
+
+CHAPTER_FLASHCARDS = {
+    'Water_Cycles': [
+        {'concept': 'Evaporation', 'definition': 'Process where liquid water changes to water vapor (gas) due to heat'},
+        {'concept': 'Condensation', 'definition': 'Process where water vapor cools and changes back to liquid water'},
+        {'concept': 'Precipitation', 'definition': 'Water falling from clouds as rain, snow, sleet, or hail'},
+        {'concept': 'Melting', 'definition': 'Process where solid ice changes to liquid water when temperature rises above 0°C'},
+        {'concept': 'Freezing', 'definition': 'Process where liquid water changes to solid ice when temperature drops below 0°C'},
+        {'concept': 'Water Vapor', 'definition': 'Invisible gaseous form of water present in the air'},
+        {'concept': 'Steam', 'definition': 'Visible water vapor that forms when boiling water rises and cools slightly'},
+        {'concept': 'Water Cycle', 'definition': 'Continuous process of evaporation, condensation, and precipitation'},
+        {'concept': 'Boiling', 'definition': 'Rapid evaporation that occurs at 100°C, with bubbles forming throughout liquid'},
+        {'concept': 'Latent Heat', 'definition': 'Energy required for phase change without temperature change (e.g., melting or boiling)'},
+    ],
+    'Reproduction': [
+        {'concept': 'Pollination', 'definition': 'Transfer of pollen from anther to stigma of a flower'},
+        {'concept': 'Fertilization', 'definition': 'Fusion of male and female gametes to form a zygote'},
+        {'concept': 'Seed Dispersal', 'definition': 'Spreading of seeds away from the parent plant'},
+        {'concept': 'Germination', 'definition': 'Growth of a seed into a young plant'},
+        {'concept': 'Reproduction', 'definition': 'Process of producing new organisms'},
+        {'concept': 'Sexual Reproduction', 'definition': 'Reproduction requiring male and female gametes'},
+        {'concept': 'Asexual Reproduction', 'definition': 'Reproduction without the need for a partner'},
+        {'concept': 'Gametes', 'definition': 'Sex cells (sperm and egg)'},
+    ],
+}
+
+CHAPTER_MATCHING_PAIRS = {
+    'Water_Cycles': [
+        ('Evaporation', 'Liquid water becoming water vapor'),
+        ('Condensation', 'Water vapor becoming liquid water'),
+        ('Precipitation', 'Water falling from clouds as rain or snow'),
+        ('Melting', 'Ice becoming liquid water'),
+        ('Freezing', 'Liquid water becoming ice'),
+        ('Boiling', 'Rapid evaporation at 100°C'),
+        ('Water Vapor', 'Invisible gaseous water in the air'),
+        ('Steam', 'Visible water vapor from boiling or hot water'),
+    ],
+    'Reproduction': [
+        ('Bee', 'Transfers pollen between flowers'),
+        ('Wind', 'Carries pollen and seeds'),
+        ('Water', 'Disperses aquatic seeds'),
+        ('Animal', 'Eats fruit and spreads seeds'),
+        ('Stamen', 'Male part of flower'),
+        ('Stigma', 'Female part of flower'),
+        ('Seed Coat', 'Protects the embryo'),
+        ('Cotyledon', 'Stores food for growing seed'),
+    ],
+}
+
 # ==================== TIER 1: QUESTION HISTORY & QUEUE TABLES ====================
 
 def create_question_history_table():
@@ -218,6 +268,28 @@ COMPREHENSIVE_QUESTIONS = {
                 'explanation': 'Higher temperatures provide more energy for water molecules to evaporate. This accelerates the water cycle.',
                 'ref': 'Pages 33, 43-44',
                 'concept': 'Climate Impact',
+                'difficulty': 'hard'
+            },
+            {
+                'id': 'w11',
+                'type': 'MCQ',
+                'q': 'Why does water have different boiling points at different altitudes?',
+                'options': ['It doesn\'t - boiling point is always 100°C', 'Air pressure is lower at high altitudes, so water boils at lower temperature', 'Temperature is colder, so water boils faster', 'Gravity pulls water molecules apart'],
+                'answer': 'Air pressure is lower at high altitudes, so water boils at lower temperature',
+                'explanation': 'At sea level, air pressure is 1 atm, water boils at 100°C. On mountains, lower air pressure means water boils at 95°C or lower. Boiling depends on air pressure, not just temperature.',
+                'ref': 'Page 39',
+                'concept': 'Boiling Point & Pressure',
+                'difficulty': 'hard'
+            },
+            {
+                'id': 'w12',
+                'type': 'MCQ',
+                'q': 'In a closed system with water and ice in equilibrium, what happens to the water level as ice melts?',
+                'options': ['Water level rises', 'Water level stays the same', 'Water level drops', 'Unpredictable'],
+                'answer': 'Water level stays the same',
+                'explanation': 'Ice floats because it\'s less dense than water. When ice melts, it produces the same volume of water as the submerged part of the ice. Water level remains constant (this is why melting sea ice doesn\'t raise sea levels).',
+                'ref': 'Pages 31, 40',
+                'concept': 'Density of Water & Ice',
                 'difficulty': 'hard'
             },
         ]
@@ -1602,25 +1674,20 @@ def show_chapter_content(chapter_name):
 def show_chapter_flashcards(chapter_name):
     """Display flashcards for chapter"""
     try:
-        # Import chapter module based on name
+        # Get topic key from chapter name
         if "Ch 1" in chapter_name or "Reproduction" in chapter_name:
-            try:
-                from modules.ch1_reproduction import FLASHCARDS as flashcards
-            except ImportError:
-                st.warning("Could not load Ch1 flashcards")
-                return
+            topic_key = "Reproduction"
         elif "Ch 2" in chapter_name or "Water" in chapter_name:
-            try:
-                from modules.ch2_water import FLASHCARDS as flashcards
-            except ImportError:
-                st.warning("Ch2 flashcards coming soon")
-                return
+            topic_key = "Water_Cycles"
         elif "Ch 5" in chapter_name or "Electrical" in chapter_name:
             st.info("Ch5 flashcards will be added in next phase")
             return
         else:
             st.warning("Chapter not found")
             return
+
+        # Get flashcards from dict
+        flashcards = CHAPTER_FLASHCARDS.get(topic_key, [])
 
         if not flashcards:
             st.info("Flashcards coming soon for this chapter!")
@@ -1791,8 +1858,39 @@ def show_chapter_minigame(chapter_name):
                 )
 
         elif "Ch 2" in chapter_name or "Water" in chapter_name:
-            st.write("🎮 **Water Cycle Sorter**: Drag items into correct water cycle stages")
-            st.info("Coming soon - Drag & Drop mini-game implementation in progress")
+            st.write("🎮 **Water Cycle Sorter**: Categorize water cycle processes")
+
+            # Water cycle items to categorize
+            items = [
+                "Sun heats ocean water",
+                "Water becomes invisible gas",
+                "Vapor rises into atmosphere",
+                "Cool air cools water vapor",
+                "Droplets form clouds",
+                "Clouds become heavy",
+                "Water falls as rain",
+                "Rain flows into rivers and lakes",
+                "Water returns to ocean",
+                "Cycle begins again",
+                "Plants release water vapor",
+                "Animals drink water"
+            ]
+
+            categories = ["Evaporation", "Condensation", "Precipitation", "Accumulation"]
+
+            st.info("📝 Drag each item to the correct water cycle stage:")
+            st.write("- **Evaporation**: Water becomes vapor")
+            st.write("- **Condensation**: Vapor becomes water droplets")
+            st.write("- **Precipitation**: Water falls from clouds")
+            st.write("- **Accumulation**: Water collects in oceans/lakes")
+
+            # Store game state
+            game_key = f"water_cycle_game_{st.session_state.user_id}"
+            if game_key not in st.session_state:
+                st.session_state[game_key] = {'completed': False}
+
+            if not st.session_state[game_key]['completed']:
+                st.warning("🎮 Interactive drag-and-drop game coming soon! For now, practice with the quiz above.")
 
         elif "Ch 5" in chapter_name or "Electrical" in chapter_name:
             st.write("🎮 **Circuit Builder**: Build circuits by connecting components in order")
