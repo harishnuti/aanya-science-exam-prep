@@ -70,6 +70,57 @@ CHAPTER_FLASHCARDS = {
         {'concept': 'Series Circuit', 'definition': 'Circuit where components are connected in a single path; same current flows through all'},
         {'concept': 'Parallel Circuit', 'definition': 'Circuit where components have separate paths; current can flow through multiple routes'},
     ],
+    'Plant_Transport': [
+        {'concept': 'Plant Transport System', 'definition': 'System that carries water, minerals, and food to all parts of a plant', 'ref': 'Page 52'},
+        {'concept': 'Roots', 'definition': 'Plant part that absorbs water and mineral salts from soil', 'ref': 'Page 54'},
+        {'concept': 'Root Hairs', 'definition': 'Tiny structures that increase surface area for water absorption', 'ref': 'Page 54'},
+        {'concept': 'Xylem', 'definition': 'Water-carrying tubes; transports water and minerals from roots to leaves', 'ref': 'Pages 55-56'},
+        {'concept': 'Phloem', 'definition': 'Food-carrying tubes; transports food (glucose) from leaves to all parts', 'ref': 'Pages 57-58'},
+        {'concept': 'Mineral Salts', 'definition': 'Nutrients absorbed by roots and transported through xylem', 'ref': 'Page 55'},
+        {'concept': 'Transpiration', 'definition': 'Process where water vapour escapes from leaves', 'ref': 'Page 59'},
+        {'concept': 'Stem', 'definition': 'Plant part containing xylem and phloem tubes', 'ref': 'Pages 56-57'},
+        {'concept': 'Leaves', 'definition': 'Plant part where food is made; loses water through transpiration', 'ref': 'Pages 57, 59'},
+        {'concept': 'Photosynthesis', 'definition': 'Process where leaves make food using light and water', 'ref': 'Page 54'},
+        {'concept': 'Woody Tubes', 'definition': 'Another name for xylem (appears as wood in stems)', 'ref': 'Page 55'},
+        {'concept': 'Food Transport', 'definition': 'Movement of glucose from leaves to other plant parts through phloem', 'ref': 'Pages 57-58'},
+        {'concept': 'Water Transport', 'definition': 'Movement of water from roots to all plant parts through xylem', 'ref': 'Pages 55-56'},
+        {'concept': 'Bark Removal', 'definition': 'Cutting ring of bark removes phloem; plant above cut starves', 'ref': 'Page 59'},
+        {'concept': 'Plant Wilting', 'definition': 'Plant droops when water-carrying tubes are cut; no water reaches leaves', 'ref': 'Page 60'},
+    ],
+    'Human_Systems': [
+        {'concept': 'Air', 'definition': 'Mixture of gases including oxygen, nitrogen, carbon dioxide, and water vapour', 'ref': 'Page 65'},
+        {'concept': 'Oxygen', 'definition': 'Gas in air that living things need to survive (about 21%)', 'ref': 'Page 65'},
+        {'concept': 'Carbon Dioxide', 'definition': 'Gas produced by living things; about 0.04% inhaled, 4.4% exhaled', 'ref': 'Pages 65, 70'},
+        {'concept': 'Nose', 'definition': 'Allows air to enter and leave body; warms and moistens air; traps dust', 'ref': 'Page 69'},
+        {'concept': 'Windpipe (Trachea)', 'definition': 'Carries air to and from lungs', 'ref': 'Page 69'},
+        {'concept': 'Lungs', 'definition': 'Main respiratory organs where gaseous exchange happens', 'ref': 'Pages 69-71'},
+        {'concept': 'Diaphragm', 'definition': 'Muscle below lungs that aids breathing by contracting and relaxing', 'ref': 'Page 70'},
+        {'concept': 'Gaseous Exchange', 'definition': 'Oxygen enters blood, carbon dioxide leaves blood (in lungs)', 'ref': 'Page 71'},
+        {'concept': 'Breathing', 'definition': 'Taking in air (inhale) and releasing air (exhale)', 'ref': 'Page 69'},
+        {'concept': 'Heart', 'definition': 'Muscle that pumps blood to different parts of body', 'ref': 'Pages 75-76'},
+        {'concept': 'Blood Vessels', 'definition': 'Tubes carrying blood; include arteries and veins', 'ref': 'Page 76'},
+        {'concept': 'Pulse', 'definition': 'Heartbeat felt at wrist or neck; rhythm created by heart pumping', 'ref': 'Page 76'},
+        {'concept': 'Heart Rate', 'definition': 'Number of times heart beats in one minute', 'ref': 'Page 76'},
+        {'concept': 'Inhaled Air', 'definition': 'Air breathed in; contains 21% oxygen, 0.04% carbon dioxide', 'ref': 'Page 70'},
+        {'concept': 'Exhaled Air', 'definition': 'Air breathed out; contains 16% oxygen, 4.4% carbon dioxide', 'ref': 'Page 70'},
+    ],
+    'Electric_Circuits': [
+        {'concept': 'Series Circuit', 'definition': 'Single path for current; components connected one after another', 'ref': 'Pages 105-107'},
+        {'concept': 'Voltage', 'definition': 'Electrical pressure provided by battery; measured in Volts', 'ref': 'Pages 108-110'},
+        {'concept': 'Current', 'definition': 'Flow of electrical charge through circuit; measured in Amperes', 'ref': 'Page 109'},
+        {'concept': 'Resistance', 'definition': 'Opposition to current flow; measured in Ohms (unit R)', 'ref': 'Pages 110-111'},
+        {'concept': 'Ohm\'s Law', 'definition': 'V = I × R (Voltage equals Current times Resistance)', 'ref': 'Pages 108-110'},
+        {'concept': 'More Batteries', 'definition': 'More voltage → More current → Brighter bulbs', 'ref': 'Pages 108-110'},
+        {'concept': 'More Bulbs (Series)', 'definition': 'More resistance → Less current → Dimmer bulbs', 'ref': 'Pages 110-113'},
+        {'concept': 'Total Resistance', 'definition': 'In series: R_total = R₁ + R₂ + R₃ (sum of all resistances)', 'ref': 'Pages 110-113'},
+        {'concept': 'Voltage Drop', 'definition': 'Voltage divides among components in series circuit', 'ref': 'Page 110'},
+        {'concept': 'Circuit Breaker', 'definition': 'Safety device that trips when current is too high, preventing fires', 'ref': 'Page 113'},
+        {'concept': 'Electrical Overload', 'definition': 'Too many appliances drawing too much current', 'ref': 'Pages 113-114'},
+        {'concept': 'Fuse', 'definition': 'Safety device that melts when current is too high', 'ref': 'Page 113'},
+        {'concept': 'Energy Conservation', 'definition': 'Saving electricity by turning off devices and using less power', 'ref': 'Pages 114-115'},
+        {'concept': 'Fossil Fuels', 'definition': 'Coal, oil, gas burned to generate electricity', 'ref': 'Page 115'},
+        {'concept': 'Renewable Energy', 'definition': 'Energy from sun, wind, water that does not run out', 'ref': 'Page 115'},
+    ],
 }
 
 CHAPTER_MATCHING_PAIRS = {
@@ -102,6 +153,57 @@ CHAPTER_MATCHING_PAIRS = {
         ('Parallel Circuit', 'Components in multiple paths'),
         ('Resistance', 'Opposition to current flow (Ω)'),
         ('Ampere', 'Unit of electric current'),
+    ],
+    'Plant_Transport': [
+        ('Xylem', 'Carries water and minerals'),
+        ('Phloem', 'Carries food (glucose)'),
+        ('Roots', 'Absorb water and minerals'),
+        ('Leaves', 'Make food; lose water'),
+        ('Stem', 'Contains transport tubes'),
+        ('Root Hairs', 'Increase absorption surface'),
+        ('Transpiration', 'Water vapour from leaves'),
+        ('Photosynthesis', 'Leaves make food'),
+        ('Mineral Salts', 'Travel in xylem'),
+        ('Water Transport', 'From roots to all parts'),
+        ('Food Transport', 'From leaves to all parts'),
+        ('Woody tubes', 'Xylem tubes'),
+        ('Cutting phloem', 'Plant starves (no food below)'),
+        ('Cutting xylem', 'Plant wilts (no water)'),
+        ('Plant death', 'When both xylem and phloem removed'),
+    ],
+    'Human_Systems': [
+        ('Oxygen', 'Gas needed for survival'),
+        ('Carbon dioxide', 'Waste gas produced by living things'),
+        ('Nose', 'Warms and moistens air'),
+        ('Windpipe', 'Carries air to lungs'),
+        ('Lungs', 'Gaseous exchange happens here'),
+        ('Diaphragm', 'Muscle that aids breathing'),
+        ('Breathing in', 'Inhale; diaphragm contracts'),
+        ('Breathing out', 'Exhale; diaphragm relaxes'),
+        ('Heart', 'Pumps blood'),
+        ('Arteries', 'Carry oxygen-rich blood away'),
+        ('Veins', 'Carry oxygen-poor blood back'),
+        ('Pulse', 'Heartbeat rhythm'),
+        ('Exercise', 'Increases breathing and heart rate'),
+        ('Asthma', 'Narrowed airways due to swelling'),
+        ('Smoking', 'Harms lungs and breathing'),
+    ],
+    'Electric_Circuits': [
+        ('Series circuit', 'Single path for current'),
+        ('Voltage', 'Electrical pressure from battery'),
+        ('Current', 'Flow of electrical charge'),
+        ('Resistance', 'Opposition to current flow'),
+        ('Ohm\'s Law', 'V = I × R'),
+        ('More batteries', 'Brighter bulbs'),
+        ('More bulbs in series', 'Dimmer bulbs'),
+        ('Total resistance', 'R₁ + R₂ + R₃'),
+        ('Voltage drop', 'Voltage divides among bulbs'),
+        ('Circuit breaker', 'Prevents electrical fires'),
+        ('Fuse', 'Safety device that melts'),
+        ('Overload', 'Too much current'),
+        ('Energy conservation', 'Save electricity'),
+        ('Fossil fuels', 'Coal, oil, gas for power'),
+        ('Renewable energy', 'Never runs out'),
     ],
 }
 
@@ -605,6 +707,78 @@ COMPREHENSIVE_QUESTIONS = {
                 'concept': 'Power Dissipation',
                 'difficulty': 'hard'
             },
+        ]
+    },
+
+    'Plant_Transport': {
+        'easy': [
+            {'id': 'pt1', 'type': 'MCQ', 'q': 'What is the main function of roots?', 'options': ['Make food', 'Absorb water and minerals', 'Transport food', 'Release oxygen'], 'answer': 'Absorb water and minerals', 'explanation': 'Roots absorb water and mineral salts from soil. These are transported to other parts. (Textbook Page 54)', 'difficulty': 'easy'},
+            {'id': 'pt2', 'type': 'MCQ', 'q': 'Which tubes carry water through a plant?', 'options': ['Phloem tubes', 'Xylem tubes', 'Both equally', 'Neither'], 'answer': 'Xylem tubes', 'explanation': 'Xylem tubes (water-carrying tubes) transport water from roots to leaves. (Textbook Pages 55-56)', 'difficulty': 'easy'},
+            {'id': 'pt3', 'type': 'MCQ', 'q': 'Which tubes carry food through a plant?', 'options': ['Xylem tubes', 'Phloem tubes', 'Root hairs', 'Stems'], 'answer': 'Phloem tubes', 'explanation': 'Phloem tubes (food-carrying tubes) transport food made in leaves to all parts. (Textbook Pages 57-58)', 'difficulty': 'easy'},
+            {'id': 'pt4', 'type': 'MCQ', 'q': 'Where is food made in a plant?', 'options': ['In roots', 'In stems', 'In leaves', 'In flowers'], 'answer': 'In leaves', 'explanation': 'Leaves make food through photosynthesis. This food is then transported to other parts via phloem. (Textbook Pages 54, 57)', 'difficulty': 'easy'},
+            {'id': 'pt5', 'type': 'MCQ', 'q': 'What do root hairs help with?', 'options': ['Making food', 'Increasing water absorption surface area', 'Transporting minerals', 'Storing water'], 'answer': 'Increasing water absorption surface area', 'explanation': 'Root hairs are tiny extensions that greatly increase the surface area for absorbing water and minerals. (Textbook Page 54)', 'difficulty': 'easy'},
+        ],
+        'medium': [
+            {'id': 'pt6', 'type': 'MCQ', 'q': 'Why do plants need a transport system?', 'options': ['To look tall', 'To move water and food to all parts', 'To make seeds', 'To absorb sunlight'], 'answer': 'To move water and food to all parts', 'explanation': 'Plants need transport to move water (roots absorb it, leaves need it) and food (made in leaves, needed everywhere). (Textbook Pages 52-53)', 'difficulty': 'medium'},
+            {'id': 'pt7', 'type': 'MCQ', 'q': 'What does the term transpiration mean?', 'options': ['Moving water upward', 'Losing water vapour from leaves', 'Making food', 'Absorbing minerals'], 'answer': 'Losing water vapour from leaves', 'explanation': 'Transpiration is when water vapour escapes from leaves into the air. (Textbook Page 59)', 'difficulty': 'medium'},
+            {'id': 'pt8', 'type': 'MCQ', 'q': 'Which part of the plant contains both xylem and phloem tubes?', 'options': ['Roots', 'Leaves', 'Stem', 'Flowers'], 'answer': 'Stem', 'explanation': 'The stem contains both xylem (water) and phloem (food) tubes running through it. (Textbook Pages 56-57)', 'difficulty': 'medium'},
+            {'id': 'pt9', 'type': 'MCQ', 'q': 'What are mineral salts used for in plants?', 'options': ['Making water', 'Growing and staying healthy', 'Making flowers', 'Preventing wilting'], 'answer': 'Growing and staying healthy', 'explanation': 'Mineral salts from soil are nutrients that plants need to grow and stay healthy. They travel through xylem. (Textbook Page 55)', 'difficulty': 'medium'},
+            {'id': 'pt10', 'type': 'MCQ', 'q': 'In which direction does food travel through phloem?', 'options': ['Downward only', 'Upward only', 'From leaves to other parts', 'From roots to leaves'], 'answer': 'From leaves to other parts', 'explanation': 'Food is made in leaves and transported by phloem to all other parts that need it. (Textbook Pages 57-58)', 'difficulty': 'medium'},
+        ],
+        'hard': [
+            {'id': 'pt11', 'type': 'MCQ', 'q': 'What happens if a ring of bark is cut around a tree stem?', 'options': ['Tree grows taller', 'Food cannot reach parts below; they starve', 'Tree gets more water', 'Nothing changes'], 'answer': 'Food cannot reach parts below; they starve', 'explanation': 'Bark contains phloem tubes. Removing it cuts food transport, so parts below receive no food and starve. (Textbook Page 59)', 'difficulty': 'hard'},
+            {'id': 'pt12', 'type': 'MCQ', 'q': 'If water-carrying tubes (xylem) are cut, what happens to the plant?', 'options': ['It grows faster', 'It wilts (droops)', 'It makes more food', 'Nothing happens'], 'answer': 'It wilts (droops)', 'explanation': 'When xylem is cut, water cannot reach leaves, so the plant wilts. (Textbook Page 60)', 'difficulty': 'hard'},
+            {'id': 'pt13', 'type': 'MCQ', 'q': 'Which would have a greater impact on plant survival: cutting all phloem or cutting all xylem?', 'options': ['Cutting phloem is worse', 'Cutting xylem is worse', 'Both equally harmful', 'Neither matters'], 'answer': 'Cutting xylem is worse', 'explanation': 'Without water (xylem), the plant dies within days. Without food (phloem), it takes longer. Water is immediately critical. (Textbook Pages 55-59)', 'difficulty': 'hard'},
+            {'id': 'pt14', 'type': 'MCQ', 'q': 'What is the relationship between photosynthesis and food transport?', 'options': ['Unrelated', 'Photosynthesis makes food; phloem transports it', 'Photosynthesis uses food from phloem', 'Xylem carries photosynthesis products'], 'answer': 'Photosynthesis makes food; phloem transports it', 'explanation': 'Leaves use photosynthesis to make food. This food is then transported through phloem to other parts. (Textbook Pages 54, 57-58)', 'difficulty': 'hard'},
+            {'id': 'pt15', 'type': 'MCQ', 'q': 'If a plant is in very dry soil, why does it wilt even if water is below ground?', 'options': ['Roots are blocked', 'Root hairs cannot absorb dry soil water fast enough', 'Transpiration is faster than absorption', 'Xylem stops working'], 'answer': 'Root hairs cannot absorb dry soil water fast enough', 'explanation': 'In dry soil, water is harder for roots to absorb. Transpiration from leaves happens faster than roots can absorb water, causing wilting. (Textbook Pages 54, 59)', 'difficulty': 'hard'},
+        ]
+    },
+
+    'Human_Systems': {
+        'easy': [
+            {'id': 'hs1', 'type': 'MCQ', 'q': 'What is the main gas that living things need from air?', 'options': ['Nitrogen', 'Carbon dioxide', 'Oxygen', 'Water vapour'], 'answer': 'Oxygen', 'explanation': 'Living things need oxygen to survive. Air contains about 21% oxygen. (Textbook Page 65)', 'difficulty': 'easy'},
+            {'id': 'hs2', 'type': 'MCQ', 'q': 'Which organ is the main site for gaseous exchange?', 'options': ['Nose', 'Windpipe', 'Lungs', 'Heart'], 'answer': 'Lungs', 'explanation': 'In the lungs, oxygen enters blood and carbon dioxide leaves blood. (Textbook Pages 69-71)', 'difficulty': 'easy'},
+            {'id': 'hs3', 'type': 'MCQ', 'q': 'What does the diaphragm do?', 'options': ['Filters air', 'Contracts and relaxes to aid breathing', 'Pumps blood', 'Makes food'], 'answer': 'Contracts and relaxes to aid breathing', 'explanation': 'The diaphragm is a muscle below the lungs. When it contracts, lungs expand (inhale). (Textbook Page 70)', 'difficulty': 'easy'},
+            {'id': 'hs4', 'type': 'MCQ', 'q': 'What is the main function of the heart?', 'options': ['Make blood', 'Filter blood', 'Pump blood to different parts', 'Store blood'], 'answer': 'Pump blood to different parts', 'explanation': 'The heart is a muscle that pumps blood continuously throughout the body. (Textbook Pages 75-76)', 'difficulty': 'easy'},
+            {'id': 'hs5', 'type': 'MCQ', 'q': 'Where can you feel your pulse?', 'options': ['Only on wrist', 'Only on neck', 'On wrist or neck', 'Nowhere'], 'answer': 'On wrist or neck', 'explanation': 'You can feel pulse by placing fingers on wrist or side of neck. This shows heartbeat. (Textbook Page 76)', 'difficulty': 'easy'},
+        ],
+        'medium': [
+            {'id': 'hs6', 'type': 'MCQ', 'q': 'How much oxygen is in exhaled air compared to inhaled air?', 'options': ['More oxygen in exhaled', 'Less oxygen in exhaled (16% vs 21%)', 'Same amount', 'No oxygen in exhaled'], 'answer': 'Less oxygen in exhaled (16% vs 21%)', 'explanation': 'Inhaled air: 21% oxygen. Exhaled air: 16% oxygen. Our body uses the oxygen. (Textbook Page 70)', 'difficulty': 'medium'},
+            {'id': 'hs7', 'type': 'MCQ', 'q': 'What happens to breathing and heart rate during exercise?', 'options': ['Both stay same', 'Both decrease', 'Both increase', 'Breathing increases, heart decreases'], 'answer': 'Both increase', 'explanation': 'During exercise, body needs more oxygen. Breathing rate and heart rate increase to deliver oxygen. (Textbook Page 79-80)', 'difficulty': 'medium'},
+            {'id': 'hs8', 'type': 'MCQ', 'q': 'What is the function of blood vessels?', 'options': ['Make blood', 'Carry blood throughout body', 'Filter waste', 'Store oxygen'], 'answer': 'Carry blood throughout body', 'explanation': 'Blood vessels (arteries and veins) form a network to transport blood to and from all body parts. (Textbook Page 76)', 'difficulty': 'medium'},
+            {'id': 'hs9', 'type': 'MCQ', 'q': 'What gases are exchanged in the lungs?', 'options': ['Nitrogen and oxygen', 'Oxygen in, carbon dioxide out', 'Carbon dioxide in, oxygen out', 'Only oxygen'], 'answer': 'Oxygen in, carbon dioxide out', 'explanation': 'In gaseous exchange, oxygen from inhaled air enters the blood, and carbon dioxide (waste) leaves the blood. (Textbook Page 71)', 'difficulty': 'medium'},
+            {'id': 'hs10', 'type': 'MCQ', 'q': 'How can you measure heart rate?', 'options': ['Feel pulse and count for 1 minute', 'Count breaths per minute', 'Measure lung capacity', 'Check oxygen levels'], 'answer': 'Feel pulse and count for 1 minute', 'explanation': 'Heart rate is measured by feeling the pulse at wrist or neck and counting heartbeats in one minute. (Textbook Page 76)', 'difficulty': 'medium'},
+        ],
+        'hard': [
+            {'id': 'hs11', 'type': 'MCQ', 'q': 'During asthma attack, what happens to airways?', 'options': ['Airways widen', 'Airways narrow/swell', 'Airways stay normal', 'Airways disappear'], 'answer': 'Airways narrow/swell', 'explanation': 'Asthma causes swelling and narrowing of airways, making breathing difficult. Inhaler medicine helps. (Textbook Page 71)', 'difficulty': 'hard'},
+            {'id': 'hs12', 'type': 'MCQ', 'q': 'How does carbon dioxide reach the lungs to be exhaled?', 'options': ['Through arteries', 'Through veins from body cells', 'Made in lungs', 'Through nose'], 'answer': 'Through veins from body cells', 'explanation': 'Body cells produce CO₂ as waste. It dissolves in blood and returns to lungs via veins for exhalation. (Textbook Page 71)', 'difficulty': 'hard'},
+            {'id': 'hs13', 'type': 'MCQ', 'q': 'Why is the nose important in the respiratory system?', 'options': ['Just allows air entry', 'Warms, moistens, and filters air', 'Makes oxygen', 'Exchanges gases'], 'answer': 'Warms, moistens, and filters air', 'explanation': 'The nose warms cold air, adds moisture, and traps dust/particles before air reaches lungs. (Textbook Page 69)', 'difficulty': 'hard'},
+            {'id': 'hs14', 'type': 'MCQ', 'q': 'What would happen to body cells if they received blood with too little oxygen?', 'options': ['Cells thrive', 'Cells work slowly or die', 'Cells grow faster', 'No effect'], 'answer': 'Cells work slowly or die', 'explanation': 'Oxygen is essential for cell respiration and energy production. Insufficient oxygen causes cells to dysfunction or die. (Textbook Pages 65, 71)', 'difficulty': 'hard'},
+            {'id': 'hs15', 'type': 'MCQ', 'q': 'How does smoking harm the respiratory system?', 'options': ['No effect', 'Damages lungs and reduces oxygen absorption', 'Makes lungs stronger', 'Increases air flow'], 'answer': 'Damages lungs and reduces oxygen absorption', 'explanation': 'Smoking damages lung tissue and makes it harder for lungs to absorb oxygen, reducing oxygen in blood. (Textbook Page 71)', 'difficulty': 'hard'},
+        ]
+    },
+
+    'Electric_Circuits': {
+        'easy': [
+            {'id': 'ec1', 'type': 'MCQ', 'q': 'What is a series circuit?', 'options': ['Many paths for current', 'Single path for current with components in a line', 'No path for current', 'Random paths'], 'answer': 'Single path for current with components in a line', 'explanation': 'A series circuit has one path for current; all components are connected in a line. (Textbook Pages 105-107)', 'difficulty': 'easy'},
+            {'id': 'ec2', 'type': 'MCQ', 'q': 'What happens when you add more batteries in a series circuit?', 'options': ['Bulbs get dimmer', 'Bulbs get brighter', 'No change', 'Circuit breaks'], 'answer': 'Bulbs get brighter', 'explanation': 'More batteries provide more voltage, which increases current, making bulbs brighter. (Textbook Pages 108-110)', 'difficulty': 'easy'},
+            {'id': 'ec3', 'type': 'MCQ', 'q': 'What happens when you add more bulbs in a series circuit?', 'options': ['All stay bright', 'All get dimmer', 'One gets brighter', 'Nothing happens'], 'answer': 'All get dimmer', 'explanation': 'More bulbs add resistance. More resistance means less current, so all bulbs get dimmer. (Textbook Pages 110-113)', 'difficulty': 'easy'},
+            {'id': 'ec4', 'type': 'MCQ', 'q': 'What does Ohm\'s Law state?', 'options': ['V = I + R', 'V = I × R', 'V = I ÷ R', 'V = R - I'], 'answer': 'V = I × R', 'explanation': 'Ohm\'s Law: Voltage = Current × Resistance. This relates the three key quantities in a circuit. (Textbook Pages 108-110)', 'difficulty': 'easy'},
+            {'id': 'ec5', 'type': 'MCQ', 'q': 'What is a circuit breaker?', 'options': ['Something that breaks circuits', 'A device that prevents electrical fires', 'A type of bulb', 'A power source'], 'answer': 'A device that prevents electrical fires', 'explanation': 'A circuit breaker is a safety device that automatically trips (opens) when current is too high, preventing fires and damage. (Textbook Page 113)', 'difficulty': 'easy'},
+        ],
+        'medium': [
+            {'id': 'ec6', 'type': 'MCQ', 'q': 'In a series circuit, what happens to voltage across each bulb?', 'options': ['Each bulb gets full voltage', 'Voltage divides among bulbs', 'Bulbs get no voltage', 'Voltage stays same everywhere'], 'answer': 'Voltage divides among bulbs', 'explanation': 'In series, total voltage divides among components. With 3 bulbs and 6V, each bulb gets about 2V. (Textbook Page 110)', 'difficulty': 'hard'},
+            {'id': 'ec7', 'type': 'MCQ', 'q': 'In a series circuit with 2 identical bulbs and 6V battery, what voltage is across each bulb?', 'options': ['0V', '6V', '3V', '12V'], 'answer': '3V', 'explanation': 'In series, voltage divides equally among identical resistances. 6V ÷ 2 bulbs = 3V per bulb. (Textbook Page 110)', 'difficulty': 'hard'},
+            {'id': 'ec8', 'type': 'MCQ', 'q': 'What is the total resistance in a series circuit with bulbs of 2Ω, 3Ω, and 5Ω?', 'options': ['3Ω', '5Ω', '10Ω', '2Ω'], 'answer': '10Ω', 'explanation': 'In series, total resistance = sum of all resistances. R_total = 2Ω + 3Ω + 5Ω = 10Ω. (Textbook Pages 110-113)', 'difficulty': 'medium'},
+            {'id': 'ec9', 'type': 'MCQ', 'q': 'How does a fuse differ from a circuit breaker?', 'options': ['Same thing', 'Fuse melts; breaker trips and can be reset', 'Breaker melts; fuse trips', 'No real difference'], 'answer': 'Fuse melts; breaker trips and can be reset', 'explanation': 'Fuse: melts and breaks (one-time use). Breaker: trips and can be manually reset multiple times. (Textbook Page 113)', 'difficulty': 'medium'},
+            {'id': 'ec10', 'type': 'MCQ', 'q': 'Why is energy conservation important?', 'options': ['Saves money', 'Reduces fossil fuel use and environmental impact', 'Makes bulbs brighter', 'Prevents circuit breaks'], 'answer': 'Reduces fossil fuel use and environmental impact', 'explanation': 'Saving electricity reduces the need to burn fossil fuels, which protects the environment. (Textbook Pages 114-115)', 'difficulty': 'medium'},
+        ],
+        'hard': [
+            {'id': 'ec11', 'type': 'MCQ', 'q': 'If you have a 12V battery and want current of 2A, what resistance is needed?', 'options': ['6Ω', '12Ω', '24Ω', '2Ω'], 'answer': '6Ω', 'explanation': 'Using Ohm\'s Law: V = IR, so R = V/I = 12V ÷ 2A = 6Ω. (Textbook Pages 108-110)', 'difficulty': 'hard'},
+            {'id': 'ec12', 'type': 'MCQ', 'q': 'In a series circuit, if one bulb burns out, what happens?', 'options': ['Other bulbs stay on', 'All bulbs turn off', 'Brightness increases', 'Circuit resets'], 'answer': 'All bulbs turn off', 'explanation': 'In series, the broken bulb breaks the single path, stopping all current. All bulbs turn off. (Textbook Pages 105-107)', 'difficulty': 'hard'},
+            {'id': 'ec13', 'type': 'MCQ', 'q': 'What causes an electrical overload?', 'options': ['Not enough wires', 'Too many appliances using too much current', 'Too much insulation', 'Low battery voltage'], 'answer': 'Too many appliances using too much current', 'explanation': 'Overload occurs when total current demand exceeds circuit capacity, creating dangerously high heat. (Textbook Pages 113-114)', 'difficulty': 'hard'},
+            {'id': 'ec14', 'type': 'MCQ', 'q': 'How does renewable energy differ from fossil fuels?', 'options': ['Same thing', 'Renewables never run out; fossil fuels are limited', 'Fossil fuels are unlimited', 'Both run out at same rate'], 'answer': 'Renewables never run out; fossil fuels are limited', 'explanation': 'Renewable energy (sun, wind, water) continuously replenishes. Fossil fuels (coal, oil) are finite and will run out. (Textbook Page 115)', 'difficulty': 'hard'},
+            {'id': 'ec15', 'type': 'MCQ', 'q': 'What is power dissipation in a circuit?', 'options': ['Voltage used up', 'Current converted to heat (P = I²R)', 'Resistance disappearing', 'Battery draining'], 'answer': 'Current converted to heat (P = I²R)', 'explanation': 'Power dissipation is the rate at which electrical energy converts to heat in a resistor. P = I²R or P = VI. (Textbook Pages 113-115)', 'difficulty': 'hard'},
         ]
     }
 }
@@ -1716,25 +1890,29 @@ def show_chapter_content(chapter_name):
         st.session_state[f"{chapter_name}_tab"] = 0
 
     # Tab interface based on chapter
-    tabs = st.tabs(["📖 Learn", "🎯 Practice", "🎮 Game", "🧠 Challenge", "📊 Progress"])
+    tabs = st.tabs(["📖 Learn", "🎯 Match", "❓ Practice", "🎮 Game", "🧠 Challenge", "📊 Progress"])
 
     with tabs[0]:  # Learn Tab
-        st.subheader(f"Learning Content - {chapter_name}")
+        st.subheader(f"Flashcards - {chapter_name}")
         show_chapter_flashcards(chapter_name)
 
-    with tabs[1]:  # Practice Tab
+    with tabs[1]:  # Match Tab
+        st.subheader(f"Concept Matching - {chapter_name}")
+        show_chapter_matching(chapter_name)
+
+    with tabs[2]:  # Practice Tab
         st.subheader(f"Practice Quiz - {chapter_name}")
         show_chapter_quiz(chapter_name)
 
-    with tabs[2]:  # Game Tab
+    with tabs[3]:  # Game Tab
         st.subheader(f"Interactive Game - {chapter_name}")
         show_chapter_minigame(chapter_name)
 
-    with tabs[3]:  # Challenge Tab
+    with tabs[4]:  # Challenge Tab
         st.subheader(f"Challenge Mode - {chapter_name}")
         show_chapter_brain_drainers(chapter_name)
 
-    with tabs[4]:  # Progress Tab
+    with tabs[5]:  # Progress Tab
         st.subheader(f"Your Progress - {chapter_name}")
         show_chapter_progress(chapter_name)
 
@@ -1754,9 +1932,14 @@ def show_chapter_flashcards(chapter_name):
             topic_key = "Reproduction"
         elif "Ch 2" in chapter_name or "Water" in chapter_name:
             topic_key = "Water_Cycles"
+        elif "Ch 3" in chapter_name or "Plant" in chapter_name:
+            topic_key = "Plant_Transport"
+        elif "Ch 4" in chapter_name or "Human" in chapter_name:
+            topic_key = "Human_Systems"
         elif "Ch 5" in chapter_name or "Electrical" in chapter_name:
-            st.info("Ch5 flashcards will be added in next phase")
-            return
+            topic_key = "Electrical_Systems"
+        elif "Ch 6" in chapter_name or "Circuit" in chapter_name:
+            topic_key = "Electric_Circuits"
         else:
             st.warning("Chapter not found")
             return
@@ -1826,16 +2009,94 @@ def show_chapter_flashcards(chapter_name):
         st.error(f"Could not load flashcards: {e}")
 
 
+def show_chapter_matching(chapter_name):
+    """Display matching pairs for chapter"""
+    try:
+        # Get topic key from chapter name
+        if "Ch 1" in chapter_name or "Reproduction" in chapter_name:
+            topic_key = "Reproduction"
+        elif "Ch 2" in chapter_name or "Water" in chapter_name:
+            topic_key = "Water_Cycles"
+        elif "Ch 3" in chapter_name or "Plant" in chapter_name:
+            topic_key = "Plant_Transport"
+        elif "Ch 4" in chapter_name or "Human" in chapter_name:
+            topic_key = "Human_Systems"
+        elif "Ch 5" in chapter_name or "Electrical" in chapter_name:
+            topic_key = "Electrical_Systems"
+        elif "Ch 6" in chapter_name or "Circuit" in chapter_name:
+            topic_key = "Electric_Circuits"
+        else:
+            st.warning("Chapter not found")
+            return
+
+        # Get matching pairs from dict
+        pairs = CHAPTER_MATCHING_PAIRS.get(topic_key, [])
+
+        if not pairs:
+            st.info("Matching pairs coming soon for this chapter!")
+            return
+
+        st.write("**Match the concepts on the left with their definitions on the right.**")
+        st.info(f"There are {len(pairs)} pairs to match.")
+
+        # Display all pairs in two columns
+        col1, col2 = st.columns(2)
+
+        # Get first half and shuffle second half to make it challenging
+        import random
+        left_items = [item[0] for item in pairs]
+        right_items = [item[1] for item in pairs]
+        right_shuffled = right_items.copy()
+        random.shuffle(right_shuffled)
+
+        with col1:
+            st.subheader("Concepts")
+            for i, item in enumerate(left_items, 1):
+                st.write(f"{i}. {item}")
+
+        with col2:
+            st.subheader("Definitions")
+            for i, item in enumerate(right_shuffled, 1):
+                st.write(f"• {item}")
+
+        # Show answer button
+        if st.button("Show Correct Answers", key=f"show_matching_{chapter_name}"):
+            st.success("**Correct Matches:**")
+            for concept, definition in pairs:
+                st.write(f"✓ **{concept}** → *{definition}*")
+
+        # Track completion
+        if st.button("Mark as Completed", key=f"complete_matching_{chapter_name}"):
+            st.success("✅ Matching exercise completed!")
+            track_question_answer(
+                st.session_state.user_id,
+                f'{topic_key}_matching',
+                True,
+                'easy',
+                chapter=topic_key,
+                quiz_mode='matching'
+            )
+
+    except Exception as e:
+        st.error(f"Error loading matching pairs: {e}")
+
+
 def show_chapter_quiz(chapter_name):
-    """Display practice quiz for chapter"""
+    """Display practice quiz for chapter - answers hidden until shown"""
     try:
         # Get questions for chapter from COMPREHENSIVE_QUESTIONS
-        if "🌱 Ch 1" in chapter_name:
+        if "🌱 Ch 1" in chapter_name or "Reproduction" in chapter_name:
             topic_key = "Reproduction"
-        elif "💧 Ch 2" in chapter_name:
+        elif "💧 Ch 2" in chapter_name or "Water" in chapter_name:
             topic_key = "Water_Cycles"
-        elif "⚡ Ch 5" in chapter_name:
+        elif "🌿 Ch 3" in chapter_name or "Plant" in chapter_name:
+            topic_key = "Plant_Transport"
+        elif "❤️ Ch 4" in chapter_name or "Human" in chapter_name:
+            topic_key = "Human_Systems"
+        elif "⚡ Ch 5" in chapter_name or "Electrical" in chapter_name:
             topic_key = "Electrical_Systems"
+        elif "🔌 Ch 6" in chapter_name or "Circuit" in chapter_name:
+            topic_key = "Electric_Circuits"
         else:
             st.warning("Chapter not found in question bank")
             return
@@ -1846,18 +2107,38 @@ def show_chapter_quiz(chapter_name):
             return
 
         quiz_key = f"quiz_idx_{chapter_name}"
+        answer_key = f"quiz_answered_{chapter_name}"
+
         if quiz_key not in st.session_state:
             st.session_state[quiz_key] = 0
+            st.session_state[answer_key] = False
 
         current_idx = st.session_state[quiz_key]
         if current_idx >= len(questions):
-            st.success("🎉 You've completed the quiz! Great job!")
-            if st.button("Restart Quiz", key=f"restart_quiz_{chapter_name}"):
-                st.session_state[quiz_key] = 0
-                st.rerun()
+            # Show summary
+            score = st.session_state.get(f"quiz_score_{chapter_name}", 0)
+            total = len(questions)
+            accuracy = round((score / total * 100) if total > 0 else 0, 1)
+
+            st.success(f"🎉 Quiz Complete! Score: {score}/{total} ({accuracy}%)")
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("Retake Quiz", key=f"restart_quiz_{chapter_name}"):
+                    st.session_state[quiz_key] = 0
+                    st.session_state[answer_key] = False
+                    st.session_state[f"quiz_score_{chapter_name}"] = 0
+                    st.rerun()
+            with col2:
+                if st.button("Back to Chapter", key=f"back_chapter_{chapter_name}"):
+                    st.session_state.mode = 'chapter_content'
+                    st.rerun()
             return
 
         question = questions[current_idx]
+
+        # Initialize score if not exists
+        if f"quiz_score_{chapter_name}" not in st.session_state:
+            st.session_state[f"quiz_score_{chapter_name}"] = 0
 
         # Display question
         st.progress((current_idx + 1) / len(questions))
@@ -1866,21 +2147,41 @@ def show_chapter_quiz(chapter_name):
 
         user_answer, confidence = display_question(question, current_idx + 1, len(questions))
 
-        col1, col2 = st.columns(2)
+        # Create answer tracking state
+        if f"user_answer_{chapter_name}_{current_idx}" not in st.session_state:
+            st.session_state[f"user_answer_{chapter_name}_{current_idx}"] = None
+
+        # Store user answer
+        if user_answer:
+            st.session_state[f"user_answer_{chapter_name}_{current_idx}"] = user_answer
+
+        st.markdown("---")
+
+        # Action buttons
+        col1, col2, col3 = st.columns(3)
+
         with col1:
-            if st.button("Check Answer", key=f"check_{chapter_name}_{current_idx}"):
+            if st.button("Submit Answer", key=f"submit_{chapter_name}_{current_idx}"):
                 if user_answer:
+                    st.session_state[answer_key] = True
+                else:
+                    st.warning("Please select an answer first")
+
+        # Show answer button - only if submitted
+        if st.session_state.get(answer_key, False):
+            with col2:
+                if st.button("📖 Show Answer & Explanation", key=f"show_answer_{chapter_name}_{current_idx}"):
                     is_correct, correct_answer = check_answer(question, user_answer)
 
                     if is_correct:
-                        st.success("✅ CORRECT!")
-                        st.session_state.score = st.session_state.get('score', 0) + 1
+                        st.success("✅ CORRECT! Great job!")
+                        st.session_state[f"quiz_score_{chapter_name}"] += 1
                     else:
-                        st.error("❌ Not quite right")
-                        st.info(f"**Correct Answer**: {correct_answer}")
-                        st.write(f"**Explanation**: {question['explanation']}")
+                        st.error(f"❌ Not quite right. Correct answer: **{correct_answer}**")
 
-                    # Track the answer (integrate with v4.2 system)
+                    st.info(f"**Explanation**: {question['explanation']}")
+
+                    # Track the answer
                     track_question_answer(
                         st.session_state.user_id,
                         question['id'],
@@ -1890,9 +2191,10 @@ def show_chapter_quiz(chapter_name):
                         quiz_mode='chapter_quiz'
                     )
 
-        with col2:
+        with col3:
             if st.button("Next Question ➡️", key=f"next_quiz_{chapter_name}_{current_idx}"):
                 st.session_state[quiz_key] = current_idx + 1
+                st.session_state[answer_key] = False
                 st.rerun()
 
     except Exception as e:
@@ -2002,6 +2304,101 @@ def show_chapter_minigame(chapter_name):
                     chapter='Electrical_Systems',
                     quiz_mode='minigame'
                 )
+
+        elif "Ch 3" in chapter_name or "Plant" in chapter_name:
+            st.write("🎮 **Plant Transport Puzzle**: Match plant systems to their functions")
+
+            concepts = ['Xylem', 'Phloem', 'Roots', 'Leaves', 'Stem', 'Root Hairs']
+            functions = ['Carries water and minerals', 'Carries food (glucose)', 'Absorbs water and minerals',
+                        'Make food; lose water', 'Contains transport tubes', 'Increase absorption surface']
+
+            st.info("📝 Match each plant system (left) to its function (right):")
+
+            cols = st.columns(2)
+            with cols[0]:
+                st.write("**Plant Parts:**")
+                for c in concepts:
+                    st.write(f"• {c}")
+            with cols[1]:
+                st.write("**Functions:**")
+                for f in functions:
+                    st.write(f"• {f}")
+
+            st.success("✅ Review the flashcards and matching section for the answers!")
+            track_question_answer(
+                st.session_state.user_id,
+                'ch3_minigame_transport',
+                True,
+                'medium',
+                chapter='Plant_Transport',
+                quiz_mode='minigame'
+            )
+
+        elif "Ch 4" in chapter_name or "Human" in chapter_name:
+            st.write("🎮 **Respiratory System Journey**: Trace air through your body")
+
+            st.info("📝 Follow the path of air through your respiratory system:")
+            st.write("1. **Nose**: Warms and moistens air; filters dust")
+            st.write("2. **Windpipe (Trachea)**: Carries air to lungs")
+            st.write("3. **Lungs**: Oxygen enters blood; CO₂ leaves blood")
+            st.write("4. **Heart**: Pumps oxygen-rich blood throughout body")
+            st.write("5. **Body Cells**: Use oxygen; produce CO₂")
+            st.write("6. **Veins**: Return deoxygenated blood with CO₂")
+            st.write("7. **Back to Lungs**: Cycle repeats!")
+
+            col1, col2 = st.columns(2)
+            with col1:
+                pulse_visible = st.checkbox("Can you feel your pulse?")
+                if pulse_visible:
+                    st.success("Great! That's your heart pumping blood!")
+            with col2:
+                breathing_rate = st.slider("How many breaths per minute (at rest)?", 10, 30, 15)
+                st.info(f"Normal breathing rate: 12-20 breaths/minute. Yours: {breathing_rate}")
+
+            st.success("✅ Respiratory System Journey Completed!")
+            track_question_answer(
+                st.session_state.user_id,
+                'ch4_minigame_respiratory',
+                True,
+                'medium',
+                chapter='Human_Systems',
+                quiz_mode='minigame'
+            )
+
+        elif "Ch 6" in chapter_name or "Circuit" in chapter_name:
+            st.write("🎮 **Series vs Parallel Challenge**: Design the right circuit")
+
+            st.info("📝 Let's design circuits with different behaviors:")
+
+            design = st.radio("Choose a circuit design:",
+                             ["Series: One path, dimmer bulbs", "Parallel: Multiple paths, brighter bulbs"])
+
+            if design:
+                if "Series" in design:
+                    st.write("✓ **Series Circuit** chosen:")
+                    st.write("- Single path for current")
+                    st.write("- Same current through all bulbs")
+                    st.write("- Voltage divides among bulbs")
+                    st.write("- If one bulb burns out → all go off")
+                    st.write("- Used in: String lights, some old decorations")
+                else:
+                    st.write("✓ **Parallel Circuit** chosen:")
+                    st.write("- Multiple paths for current")
+                    st.write("- Each bulb gets full voltage")
+                    st.write("- Brightness stays same")
+                    st.write("- If one bulb burns out → others stay on")
+                    st.write("- Used in: Home wiring, most modern electronics")
+
+            st.success("✅ Circuit Design Challenge Complete!")
+            track_question_answer(
+                st.session_state.user_id,
+                'ch6_minigame_circuits',
+                True,
+                'medium',
+                chapter='Electric_Circuits',
+                quiz_mode='minigame'
+            )
+
         else:
             st.info("Mini-games coming soon for this chapter!")
 
@@ -2015,18 +2412,24 @@ def show_chapter_brain_drainers(chapter_name):
 
     try:
         # Get brain drainer questions from CHALLENGE_QUESTIONS
-        if "🌱 Ch 1" in chapter_name:
+        if "🌱 Ch 1" in chapter_name or "Reproduction" in chapter_name:
             topic_key = "Reproduction"
-        elif "💧 Ch 2" in chapter_name:
+        elif "💧 Ch 2" in chapter_name or "Water" in chapter_name:
             topic_key = "Water_Cycles"
-        elif "⚡ Ch 5" in chapter_name:
+        elif "🌿 Ch 3" in chapter_name or "Plant" in chapter_name:
+            topic_key = "Plant_Transport"
+        elif "❤️ Ch 4" in chapter_name or "Human" in chapter_name:
+            topic_key = "Human_Systems"
+        elif "⚡ Ch 5" in chapter_name or "Electrical" in chapter_name:
             topic_key = "Electrical_Systems"
+        elif "🔌 Ch 6" in chapter_name or "Circuit" in chapter_name:
+            topic_key = "Electric_Circuits"
         else:
             st.warning("Chapter not found")
             return
 
         if topic_key not in CHALLENGE_QUESTIONS:
-            st.info("Brain drainers coming soon!")
+            st.info(f"🧠 Brain drainers for {chapter_name} coming soon! Practice with the regular quiz for now.")
             return
 
         questions = CHALLENGE_QUESTIONS[topic_key]
