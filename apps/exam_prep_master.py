@@ -11,6 +11,8 @@ from datetime import datetime, timedelta
 import sys
 from pathlib import Path
 import json
+import sqlite3
+import random
 
 # Add src folder to path for imports (app is in apps/, src is in parent)
 src_path = str(Path(__file__).parent.parent / "src")
@@ -29,6 +31,75 @@ from utils.database import (
 
 # Initialize database on app load
 init_database()
+
+# Database path (consistent with database.py)
+DB_PATH = Path(__file__).parent.parent / "src" / "data" / "app.db"
+
+# ==================== TIER 1: QUESTION HISTORY & QUEUE TABLES ====================
+
+def create_question_history_table():
+    """Create question_history table to track user questions"""
+    conn = sqlite3.connect(str(DB_PATH))
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS question_history (
+            history_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            question_id TEXT NOT NULL,
+            chapter TEXT,
+            quiz_mode TEXT,
+            first_seen_date TEXT,
+            last_seen_date TEXT,
+            times_seen INTEGER DEFAULT 1,
+            times_correct INTEGER DEFAULT 0,
+            times_incorrect INTEGER DEFAULT 0,
+            max_difficulty_attempted TEXT,
+            FOREIGN KEY (user_id) REFERENCES users(user_id),
+            UNIQUE(user_id, question_id, quiz_mode)
+        )
+    """)
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_user_quiz
+        ON question_history(user_id, quiz_mode)
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+def create_question_queue_table():
+    """Create question_queue table to manage next questions"""
+    conn = sqlite3.connect(str(DB_PATH))
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS question_queue (
+            queue_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            question_id TEXT NOT NULL,
+            chapter TEXT,
+            queue_type TEXT,
+            difficulty_level TEXT,
+            added_date TEXT,
+            priority INTEGER,
+            FOREIGN KEY (user_id) REFERENCES users(user_id)
+        )
+    """)
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_queue_user
+        ON question_queue(user_id)
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+# Initialize new tables on app load
+create_question_history_table()
+create_question_queue_table()
 
 # ==================== COMPREHENSIVE QUESTION BANK ====================
 
@@ -928,6 +999,157 @@ def get_question_by_id(q_id):
                 if q['id'] == q_id:
                     return q
     return None
+
+# ==================== TIER 1: QUESTION TRACKING FUNCTIONS ====================
+
+def get_harder_difficulty(current_difficulty):
+    """Get next difficulty level"""
+    difficulty_levels = {
+        'easy': 'medium',
+        'medium': 'hard',
+        'hard': 'hard'  # Stay at hard
+    }
+    return difficulty_levels.get(current_difficulty, 'hard')
+
+
+def track_question_answer(user_id, question_id, is_correct, difficulty, chapter='', quiz_mode=''):
+    """Track user's answer and update question history + queue"""
+    try:
+        conn = sqlite3.connect(str(DB_PATH))
+        cursor = conn.cursor()
+
+        # Check if question history already exists
+        cursor.execute("""
+            SELECT times_seen, times_correct, times_incorrect
+            FROM question_history
+            WHERE user_id=? AND question_id=? AND quiz_mode=?
+        """, (user_id, question_id, quiz_mode))
+
+        existing = cursor.fetchone()
+
+        if existing:
+            # Update existing record
+            times_seen, times_correct, times_incorrect = existing
+            new_times_seen = times_seen + 1
+            new_times_correct = times_correct + (1 if is_correct else 0)
+            new_times_incorrect = times_incorrect + (0 if is_correct else 1)
+
+            cursor.execute("""
+                UPDATE question_history
+                SET times_seen=?, times_correct=?, times_incorrect=?,
+                    last_seen_date=?, max_difficulty_attempted=?
+                WHERE user_id=? AND question_id=? AND quiz_mode=?
+            """, (new_times_seen, new_times_correct, new_times_incorrect,
+                  datetime.now().isoformat(), difficulty,
+                  user_id, question_id, quiz_mode))
+        else:
+            # Insert new record
+            cursor.execute("""
+                INSERT INTO question_history
+                (user_id, question_id, chapter, quiz_mode, first_seen_date,
+                 last_seen_date, times_seen, times_correct, times_incorrect,
+                 max_difficulty_attempted)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (user_id, question_id, chapter, quiz_mode,
+                  datetime.now().isoformat(), datetime.now().isoformat(),
+                  1, (1 if is_correct else 0), (0 if is_correct else 1),
+                  difficulty))
+
+        # If wrong answer, add to queue with higher difficulty
+        if not is_correct:
+            new_difficulty = get_harder_difficulty(difficulty)
+            cursor.execute("""
+                INSERT INTO question_queue
+                (user_id, question_id, chapter, queue_type, difficulty_level,
+                 added_date, priority)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (user_id, question_id, chapter, 'wrong_answer', new_difficulty,
+                  datetime.now().isoformat(), 10))
+
+        conn.commit()
+        conn.close()
+
+    except sqlite3.Error as e:
+        st.error(f"Database error in track_question_answer: {e}")
+        pass  # Silently fail to avoid breaking quiz flow
+
+
+def queue_next_question(user_id, chapter, quiz_mode):
+    """Get next question from queue (priority order)"""
+    try:
+        conn = sqlite3.connect(str(DB_PATH))
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT question_id, queue_type, difficulty_level
+            FROM question_queue
+            WHERE user_id = ? AND chapter = ?
+            ORDER BY
+                CASE queue_type
+                    WHEN 'wrong_answer' THEN 1
+                    WHEN 'review' THEN 2
+                    WHEN 'new' THEN 3
+                END,
+                priority DESC,
+                added_date ASC
+            LIMIT 1
+        """, (user_id, chapter))
+
+        result = cursor.fetchone()
+        conn.close()
+
+        return result  # Returns (question_id, queue_type, difficulty_level) or None
+
+    except sqlite3.Error as e:
+        return None
+
+
+def get_next_question(user_id, chapter, quiz_mode, all_questions):
+    """Smart question selection with history tracking
+    Returns: (question_dict, difficulty_level) or (None, None)
+    """
+    try:
+        conn = sqlite3.connect(str(DB_PATH))
+        cursor = conn.cursor()
+
+        # Step 1: Check queue first (wrong answers get priority)
+        queued = queue_next_question(user_id, chapter, quiz_mode)
+        if queued:
+            question_id, queue_type, difficulty = queued
+            # Find the actual question
+            for q in all_questions:
+                if q['id'] == question_id:
+                    conn.close()
+                    return q, difficulty
+
+        # Step 2: Get list of seen questions
+        cursor.execute("""
+            SELECT question_id FROM question_history
+            WHERE user_id = ? AND quiz_mode = ?
+        """, (user_id, quiz_mode))
+
+        seen_questions = {row[0] for row in cursor.fetchall()}
+        conn.close()
+
+        # Step 3: Filter out seen questions
+        unseen = [q for q in all_questions
+                  if q['id'] not in seen_questions]
+
+        if unseen:
+            return random.choice(unseen), 'easy'
+
+        # Step 4: All questions seen, restart from beginning
+        if all_questions:
+            return random.choice(all_questions), 'easy'
+
+        return None, None
+
+    except sqlite3.Error as e:
+        # Fallback to random if database fails
+        if all_questions:
+            return random.choice(all_questions), 'easy'
+        return None, None
+
 
 # ==================== DISPLAY FUNCTIONS ====================
 
