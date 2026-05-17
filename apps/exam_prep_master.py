@@ -2342,205 +2342,41 @@ def show_chapter_quiz(chapter_name):
 
 
 def show_chapter_minigame(chapter_name):
-    """Display mini-game for chapter"""
+    """Display interactive mini-game for chapter"""
     try:
-        from components.minigames import SequencingGame, DragDropGame
+        from components.fun_games import play_game_for_chapter
 
-        if "Ch 1" in chapter_name or "Reproduction" in chapter_name:
-            st.write("🎮 **Plant the Seed Game**: Arrange plant life cycle stages in correct order")
+        # Play the appropriate game based on chapter
+        game_completed = play_game_for_chapter(chapter_name)
 
-            stages = [
-                'Germination: Seed sprouts',
-                'Growth: Plant develops leaves',
-                'Photosynthesis: Plant makes food',
-                'Flowering: Plant produces flowers',
-                'Pollination: Pollen transferred',
-                'Fertilization: Seed development begins'
-            ]
+        # Track game completion if successful
+        if game_completed:
+            # Map chapter names to IDs for tracking
+            chapter_map = {
+                'Reproduction': 'ch1_minigame_plant',
+                'Water_Cycles': 'ch2_minigame_water',
+                'Plant_Transport': 'ch3_minigame_plant',
+                'Human_Systems': 'ch4_minigame_heartbeat',
+                'Electrical_Systems': 'ch5_minigame_circuit',
+                'Electric_Circuits': 'ch6_minigame_quiz'
+            }
 
-            correct_order = stages.copy()
+            # Find matching chapter key
+            game_id = None
+            for key, value in chapter_map.items():
+                if key in chapter_name or key.lower().replace('_', ' ') in chapter_name.lower():
+                    game_id = value
+                    break
 
-            is_correct = SequencingGame.create_sequence_game(stages, correct_order, "Plant Life Cycle Sequencing")
-
-            if is_correct:
-                st.success("✅ Perfect! You've completed the Plant the Seed game!")
-                # Track the game completion
+            if game_id:
                 track_question_answer(
                     st.session_state.user_id,
-                    'ch1_minigame_plant',
+                    game_id,
                     True,
                     'medium',
-                    chapter='Reproduction',
+                    chapter=chapter_name,
                     quiz_mode='minigame'
                 )
-
-        elif "Ch 2" in chapter_name or "Water" in chapter_name:
-            st.write("🎮 **Water Cycle Sorter**: Categorize water cycle processes")
-
-            # Water cycle items to categorize
-            items = [
-                "Sun heats ocean water",
-                "Water becomes invisible gas",
-                "Vapor rises into atmosphere",
-                "Cool air cools water vapor",
-                "Droplets form clouds",
-                "Clouds become heavy",
-                "Water falls as rain",
-                "Rain flows into rivers and lakes",
-                "Water returns to ocean",
-                "Cycle begins again",
-                "Plants release water vapor",
-                "Animals drink water"
-            ]
-
-            categories = ["Evaporation", "Condensation", "Precipitation", "Accumulation"]
-
-            st.info("📝 Drag each item to the correct water cycle stage:")
-            st.write("- **Evaporation**: Water becomes vapor")
-            st.write("- **Condensation**: Vapor becomes water droplets")
-            st.write("- **Precipitation**: Water falls from clouds")
-            st.write("- **Accumulation**: Water collects in oceans/lakes")
-
-            # Store game state
-            game_key = f"water_cycle_game_{st.session_state.user_id}"
-            if game_key not in st.session_state:
-                st.session_state[game_key] = {'completed': False}
-
-            if not st.session_state[game_key]['completed']:
-                st.warning("🎮 Interactive drag-and-drop game coming soon! For now, practice with the quiz above.")
-
-        elif "Ch 5" in chapter_name or "Electrical" in chapter_name:
-            st.write("🎮 **Circuit Builder**: Arrange electrical components in correct circuit order")
-
-            components = [
-                'Battery (energy source)',
-                'Switch (control)',
-                'Wire (conductor)',
-                'Light Bulb (load)',
-                'Resistor (reduces current)',
-                'Ground (complete circuit)'
-            ]
-
-            correct_order = components.copy()
-
-            st.info("📝 A complete circuit needs these components in order:")
-            st.write("1. **Battery**: Provides electrical energy")
-            st.write("2. **Switch**: Controls the circuit on/off")
-            st.write("3. **Wire**: Carries current as conductor")
-            st.write("4. **Light Bulb**: Uses energy (load)")
-            st.write("5. **Resistor**: Controls current flow")
-            st.write("6. **Ground**: Completes the circuit")
-
-            is_correct = SequencingGame.create_sequence_game(components, correct_order, "Build a Complete Circuit")
-
-            if is_correct:
-                st.success("✅ Perfect! You've built a complete circuit!")
-                # Track the game completion
-                track_question_answer(
-                    st.session_state.user_id,
-                    'ch5_minigame_circuit',
-                    True,
-                    'hard',
-                    chapter='Electrical_Systems',
-                    quiz_mode='minigame'
-                )
-
-        elif "Ch 3" in chapter_name or "Plant" in chapter_name:
-            st.write("🎮 **Plant Transport Puzzle**: Match plant systems to their functions")
-
-            concepts = ['Xylem', 'Phloem', 'Roots', 'Leaves', 'Stem', 'Root Hairs']
-            functions = ['Carries water and minerals', 'Carries food (glucose)', 'Absorbs water and minerals',
-                        'Make food; lose water', 'Contains transport tubes', 'Increase absorption surface']
-
-            st.info("📝 Match each plant system (left) to its function (right):")
-
-            cols = st.columns(2)
-            with cols[0]:
-                st.write("**Plant Parts:**")
-                for c in concepts:
-                    st.write(f"• {c}")
-            with cols[1]:
-                st.write("**Functions:**")
-                for f in functions:
-                    st.write(f"• {f}")
-
-            st.success("✅ Review the flashcards and matching section for the answers!")
-            track_question_answer(
-                st.session_state.user_id,
-                'ch3_minigame_transport',
-                True,
-                'medium',
-                chapter='Plant_Transport',
-                quiz_mode='minigame'
-            )
-
-        elif "Ch 4" in chapter_name or "Human" in chapter_name:
-            st.write("🎮 **Respiratory System Journey**: Trace air through your body")
-
-            st.info("📝 Follow the path of air through your respiratory system:")
-            st.write("1. **Nose**: Warms and moistens air; filters dust")
-            st.write("2. **Windpipe (Trachea)**: Carries air to lungs")
-            st.write("3. **Lungs**: Oxygen enters blood; CO₂ leaves blood")
-            st.write("4. **Heart**: Pumps oxygen-rich blood throughout body")
-            st.write("5. **Body Cells**: Use oxygen; produce CO₂")
-            st.write("6. **Veins**: Return deoxygenated blood with CO₂")
-            st.write("7. **Back to Lungs**: Cycle repeats!")
-
-            col1, col2 = st.columns(2)
-            with col1:
-                pulse_visible = st.checkbox("Can you feel your pulse?")
-                if pulse_visible:
-                    st.success("Great! That's your heart pumping blood!")
-            with col2:
-                breathing_rate = st.slider("How many breaths per minute (at rest)?", 10, 30, 15)
-                st.info(f"Normal breathing rate: 12-20 breaths/minute. Yours: {breathing_rate}")
-
-            st.success("✅ Respiratory System Journey Completed!")
-            track_question_answer(
-                st.session_state.user_id,
-                'ch4_minigame_respiratory',
-                True,
-                'medium',
-                chapter='Human_Systems',
-                quiz_mode='minigame'
-            )
-
-        elif "Ch 6" in chapter_name or "Circuit" in chapter_name:
-            st.write("🎮 **Series vs Parallel Challenge**: Design the right circuit")
-
-            st.info("📝 Let's design circuits with different behaviors:")
-
-            design = st.radio("Choose a circuit design:",
-                             ["Series: One path, dimmer bulbs", "Parallel: Multiple paths, brighter bulbs"])
-
-            if design:
-                if "Series" in design:
-                    st.write("✓ **Series Circuit** chosen:")
-                    st.write("- Single path for current")
-                    st.write("- Same current through all bulbs")
-                    st.write("- Voltage divides among bulbs")
-                    st.write("- If one bulb burns out → all go off")
-                    st.write("- Used in: String lights, some old decorations")
-                else:
-                    st.write("✓ **Parallel Circuit** chosen:")
-                    st.write("- Multiple paths for current")
-                    st.write("- Each bulb gets full voltage")
-                    st.write("- Brightness stays same")
-                    st.write("- If one bulb burns out → others stay on")
-                    st.write("- Used in: Home wiring, most modern electronics")
-
-            st.success("✅ Circuit Design Challenge Complete!")
-            track_question_answer(
-                st.session_state.user_id,
-                'ch6_minigame_circuits',
-                True,
-                'medium',
-                chapter='Electric_Circuits',
-                quiz_mode='minigame'
-            )
-
-        else:
-            st.info("Mini-games coming soon for this chapter!")
 
     except ImportError as e:
         st.error(f"Could not load mini-games: {e}")
