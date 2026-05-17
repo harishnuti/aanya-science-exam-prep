@@ -1557,6 +1557,333 @@ def get_weak_topics():
 
     return weak
 
+
+# ==================== CHAPTER CONTENT DISPLAY (v4.4) ====================
+
+def show_chapter_content(chapter_name):
+    """Display comprehensive chapter learning interface with tabs"""
+    st.title(f"📚 {chapter_name} | {st.session_state.user_name}")
+
+    # Initialize session state for chapter
+    if f"{chapter_name}_tab" not in st.session_state:
+        st.session_state[f"{chapter_name}_tab"] = 0
+
+    # Tab interface based on chapter
+    tabs = st.tabs(["📖 Learn", "🎯 Practice", "🎮 Game", "🧠 Challenge", "📊 Progress"])
+
+    with tabs[0]:  # Learn Tab
+        st.subheader(f"Learning Content - {chapter_name}")
+        show_chapter_flashcards(chapter_name)
+
+    with tabs[1]:  # Practice Tab
+        st.subheader(f"Practice Quiz - {chapter_name}")
+        show_chapter_quiz(chapter_name)
+
+    with tabs[2]:  # Game Tab
+        st.subheader(f"Interactive Game - {chapter_name}")
+        show_chapter_minigame(chapter_name)
+
+    with tabs[3]:  # Challenge Tab
+        st.subheader(f"Challenge Mode - {chapter_name}")
+        show_chapter_brain_drainers(chapter_name)
+
+    with tabs[4]:  # Progress Tab
+        st.subheader(f"Your Progress - {chapter_name}")
+        show_chapter_progress(chapter_name)
+
+    # Back button
+    col1, col2, col3 = st.columns([4, 1, 1])
+    with col3:
+        if st.button("← Back to Chapters", key=f"back_{chapter_name}"):
+            st.session_state.mode = 'chapter_select'
+            st.rerun()
+
+
+def show_chapter_flashcards(chapter_name):
+    """Display flashcards for chapter"""
+    try:
+        # Import chapter module based on name
+        if chapter_name == "🌱 Ch 1: Reproduction":
+            from components import ch1_reproduction
+            flashcards = ch1_reproduction.FLASHCARDS
+        elif chapter_name == "💧 Ch 2: Cycles in Water":
+            from components import ch2_water_new
+            flashcards = ch2_water_new.FLASHCARDS if hasattr(ch2_water_new, 'FLASHCARDS') else []
+        elif chapter_name == "⚡ Ch 5: Electrical Systems":
+            # Will implement Ch5
+            flashcards = []
+        else:
+            st.warning("Chapter not found")
+            return
+
+        if not flashcards:
+            st.info("Flashcards coming soon for this chapter!")
+            return
+
+        # Initialize flashcard state
+        card_key = f"flashcard_index_{chapter_name}"
+        if card_key not in st.session_state:
+            st.session_state[card_key] = 0
+
+        # Display current card
+        current_idx = st.session_state[card_key]
+        if current_idx < len(flashcards):
+            card = flashcards[current_idx]
+            concept = card.get('concept', 'Unknown')
+            definition = card.get('definition', 'No definition')
+
+            # Flashcard display
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.markdown(f"""
+                <div style="
+                    border: 2px solid #4CAF50;
+                    border-radius: 10px;
+                    padding: 30px;
+                    text-align: center;
+                    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+                    color: white;
+                    min-height: 200px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                ">
+                    <h2>{concept}</h2>
+                    <hr style="margin: 20px 0;">
+                    <p style="font-size: 18px;">{definition}</p>
+                </div>
+                """, unsafe_allow_html=True)
+
+            with col2:
+                st.metric("Card", f"{current_idx + 1}/{len(flashcards)}")
+
+            # Navigation
+            nav_col1, nav_col2, nav_col3 = st.columns(3)
+            with nav_col1:
+                if st.button("⬅️ Previous", disabled=(current_idx == 0), key=f"prev_flash_{chapter_name}"):
+                    st.session_state[card_key] = max(0, current_idx - 1)
+                    st.rerun()
+
+            with nav_col2:
+                if st.button("Next ➡️", disabled=(current_idx >= len(flashcards) - 1), key=f"next_flash_{chapter_name}"):
+                    st.session_state[card_key] = min(len(flashcards) - 1, current_idx + 1)
+                    st.rerun()
+
+            with nav_col3:
+                if st.button("Reset", key=f"reset_flash_{chapter_name}"):
+                    st.session_state[card_key] = 0
+                    st.rerun()
+
+    except ImportError as e:
+        st.error(f"Could not load flashcards: {e}")
+
+
+def show_chapter_quiz(chapter_name):
+    """Display practice quiz for chapter"""
+    try:
+        # Get questions for chapter from COMPREHENSIVE_QUESTIONS
+        if "🌱 Ch 1" in chapter_name:
+            topic_key = "Reproduction"
+        elif "💧 Ch 2" in chapter_name:
+            topic_key = "Water_Cycles"
+        elif "⚡ Ch 5" in chapter_name:
+            topic_key = "Electrical_Systems"
+        else:
+            st.warning("Chapter not found in question bank")
+            return
+
+        questions = get_all_questions_flat(topic_key)
+        if not questions:
+            st.info("Questions coming soon for this chapter!")
+            return
+
+        quiz_key = f"quiz_idx_{chapter_name}"
+        if quiz_key not in st.session_state:
+            st.session_state[quiz_key] = 0
+
+        current_idx = st.session_state[quiz_key]
+        if current_idx >= len(questions):
+            st.success("🎉 You've completed the quiz! Great job!")
+            if st.button("Restart Quiz", key=f"restart_quiz_{chapter_name}"):
+                st.session_state[quiz_key] = 0
+                st.rerun()
+            return
+
+        question = questions[current_idx]
+
+        # Display question
+        st.progress((current_idx + 1) / len(questions))
+        st.write(f"**Question {current_idx + 1}/{len(questions)}**")
+        st.write(f"**Concept**: {question.get('concept', 'General')}")
+
+        user_answer, confidence = display_question(question, current_idx + 1, len(questions))
+
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Check Answer", key=f"check_{chapter_name}_{current_idx}"):
+                if user_answer:
+                    is_correct, correct_answer = check_answer(question, user_answer)
+
+                    if is_correct:
+                        st.success("✅ CORRECT!")
+                        st.session_state.score = st.session_state.get('score', 0) + 1
+                    else:
+                        st.error("❌ Not quite right")
+                        st.info(f"**Correct Answer**: {correct_answer}")
+                        st.write(f"**Explanation**: {question['explanation']}")
+
+                    # Track the answer (integrate with v4.2 system)
+                    track_question_answer(
+                        st.session_state.user_id,
+                        question['id'],
+                        is_correct,
+                        question.get('difficulty', 'medium'),
+                        chapter=topic_key,
+                        quiz_mode='chapter_quiz'
+                    )
+
+        with col2:
+            if st.button("Next Question ➡️", key=f"next_quiz_{chapter_name}_{current_idx}"):
+                st.session_state[quiz_key] = current_idx + 1
+                st.rerun()
+
+    except Exception as e:
+        st.error(f"Error loading quiz: {e}")
+
+
+def show_chapter_minigame(chapter_name):
+    """Display mini-game for chapter"""
+    st.write("Mini-games are coming soon! In the meantime, challenge yourself with more quiz questions above.")
+
+    # Placeholder for future mini-game implementation
+    if "🌱 Ch 1" in chapter_name:
+        st.info("🎮 **Plant the Seed Game**: Sequence plant life cycle stages in correct order")
+    elif "💧 Ch 2" in chapter_name:
+        st.info("🎮 **Water Cycle Sorter**: Drag items into correct water cycle stages")
+    elif "⚡ Ch 5" in chapter_name:
+        st.info("🎮 **Circuit Builder**: Build circuits by connecting components in order")
+
+
+def show_chapter_brain_drainers(chapter_name):
+    """Display brain drainer challenge questions"""
+    st.write("PSLE-style tricky questions designed to test deeper understanding!")
+
+    try:
+        # Get brain drainer questions from CHALLENGE_QUESTIONS
+        if "🌱 Ch 1" in chapter_name:
+            topic_key = "Reproduction"
+        elif "💧 Ch 2" in chapter_name:
+            topic_key = "Water_Cycles"
+        elif "⚡ Ch 5" in chapter_name:
+            topic_key = "Electrical_Systems"
+        else:
+            st.warning("Chapter not found")
+            return
+
+        if topic_key not in CHALLENGE_QUESTIONS:
+            st.info("Brain drainers coming soon!")
+            return
+
+        questions = CHALLENGE_QUESTIONS[topic_key]
+        if not questions:
+            st.info("No brain drainers available yet for this chapter.")
+            return
+
+        drainer_key = f"drainer_idx_{chapter_name}"
+        if drainer_key not in st.session_state:
+            st.session_state[drainer_key] = 0
+
+        current_idx = st.session_state[drainer_key]
+        if current_idx >= len(questions):
+            st.success("🎉 Challenge Complete!")
+            if st.button("Start Over", key=f"restart_drainer_{chapter_name}"):
+                st.session_state[drainer_key] = 0
+                st.rerun()
+            return
+
+        question = questions[current_idx]
+        st.progress((current_idx + 1) / len(questions))
+        st.write(f"**Challenge {current_idx + 1}/{len(questions)}**")
+
+        user_answer, confidence = display_question(question, current_idx + 1, len(questions))
+
+        if st.button("Submit Answer", key=f"submit_drainer_{chapter_name}_{current_idx}"):
+            if user_answer:
+                is_correct, correct_answer = check_answer(question, user_answer)
+
+                if is_correct:
+                    st.success("🎉 Correct! Well done!")
+                else:
+                    st.warning("Not quite right. Read the explanation carefully.")
+                    st.info(f"**Correct Answer**: {correct_answer}")
+                    st.write(f"**Explanation**: {question['explanation']}")
+
+                if st.button("Next Challenge ➡️", key=f"next_drainer_{chapter_name}_{current_idx}"):
+                    st.session_state[drainer_key] = current_idx + 1
+                    st.rerun()
+
+    except Exception as e:
+        st.error(f"Error loading brain drainers: {e}")
+
+
+def show_chapter_progress(chapter_name):
+    """Display chapter progress and mastery stats"""
+    st.write("### Your Chapter Progress")
+
+    try:
+        # Get topic key
+        if "🌱 Ch 1" in chapter_name:
+            topic_key = "Reproduction"
+        elif "💧 Ch 2" in chapter_name:
+            topic_key = "Water_Cycles"
+        elif "⚡ Ch 5" in chapter_name:
+            topic_key = "Electrical_Systems"
+        else:
+            return
+
+        import sqlite3
+
+        # Query progress from database
+        conn = sqlite3.connect(str(DB_PATH))
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT COUNT(*) as questions_seen,
+                   SUM(CASE WHEN times_correct > 0 THEN 1 ELSE 0 END) as questions_correct
+            FROM question_history
+            WHERE user_id=? AND chapter=?
+        """, (st.session_state.user_id, topic_key))
+
+        result = cursor.fetchone()
+        conn.close()
+
+        questions_seen, questions_correct = result if result else (0, 0)
+        questions_correct = questions_correct or 0
+
+        # Display stats
+        col1, col2, col3, col4 = st.columns(4)
+
+        with col1:
+            st.metric("Questions Seen", questions_seen)
+
+        with col2:
+            st.metric("Correct", questions_correct)
+
+        with col3:
+            accuracy = (questions_correct / questions_seen * 100) if questions_seen > 0 else 0
+            st.metric("Accuracy", f"{accuracy:.0f}%")
+
+        with col4:
+            mastery = min(100, (accuracy + (questions_seen / 20) * 10))
+            st.metric("Mastery", f"{mastery:.0f}%")
+
+        st.progress(mastery / 100)
+        st.write("Keep practicing to master this chapter!")
+
+    except Exception as e:
+        st.info(f"Progress tracking: {e}")
+
+
 def show_topic_select():
     """All 6 chapters learning mode - comprehensive learning experience"""
     col1, col2 = st.columns([4, 1])
@@ -1629,12 +1956,9 @@ def show_topic_select():
             """, unsafe_allow_html=True)
 
             if st.button(f"Learn {chapter['name'].split(':')[0].strip()} →", use_container_width=True, key=f"ch_{idx}"):
-                st.session_state.mode = 'practice'
+                st.session_state.mode = 'chapter_content'
+                st.session_state.chapter_name = f"{chapter['emoji']} {chapter['name']}"
                 st.session_state.current_topic = chapter['key']
-                st.session_state.current_question_idx = 0
-                st.session_state.score = 0
-                st.session_state.answers = {}
-                st.session_state.current_session_id = None
                 st.rerun()
 
 def show_practice_mode():
@@ -2651,6 +2975,8 @@ def main():
         show_home()
     elif st.session_state.mode == 'topic_select':
         show_topic_select()
+    elif st.session_state.mode == 'chapter_content':
+        show_chapter_content(st.session_state.chapter_name)
     elif st.session_state.mode == 'practice':
         show_practice_mode()
     elif st.session_state.mode == 'mock_exam':
