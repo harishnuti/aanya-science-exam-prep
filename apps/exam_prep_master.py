@@ -1783,16 +1783,18 @@ def display_question(question, num, total):
             previous_confidence = st.session_state.answers[question['id']].get('confidence', 3)
 
         # FIX: Only set index if user previously answered this question
-        # For new questions, don't set a default index so user MUST select an answer
+        # For new questions, explicitly set index=None so user MUST select an answer
         radio_kwargs = {
             "label": "Select your answer:",
             "options": question['options'],
             "key": f"q_{question['id']}"
         }
 
-        # Only add index parameter if there's a previous answer
+        # Set index: previous answer if exists, otherwise None (no selection)
         if previous_answer and previous_answer in question['options']:
             radio_kwargs["index"] = question['options'].index(previous_answer)
+        else:
+            radio_kwargs["index"] = None
 
         answer = st.radio(**radio_kwargs)
         confidence = st.slider(
@@ -3222,9 +3224,11 @@ def show_challenge_mode():
         "key": f"ch_q_{question['id']}"
     }
 
-    # Only add index parameter if there's a previous answer
+    # Set index: previous answer if exists, otherwise None (no selection)
     if previous_answer and previous_answer in question['options']:
         radio_kwargs["index"] = question['options'].index(previous_answer)
+    else:
+        radio_kwargs["index"] = None
 
     # Options with visual styling
     answer = st.radio(**radio_kwargs)
