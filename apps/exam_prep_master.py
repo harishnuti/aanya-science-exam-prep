@@ -1770,7 +1770,9 @@ def display_question(question, num, total):
 
     # Safe difficulty access
     difficulty = question.get('difficulty', 'medium')
-    st.caption(f"📌 **Concept**: {question['concept']} | **Ref**: {question['ref']} | **Difficulty**: {difficulty.upper()}")
+    concept = question.get('concept', 'General Knowledge')
+    ref = question.get('ref', '')
+    st.caption(f"📌 **Concept**: {concept} | **Ref**: {ref} | **Difficulty**: {difficulty.upper()}")
 
     if question['type'] == 'MCQ':
         # BUG FIX: Restore previous answer if it exists (so students can't cheat by going back)
@@ -2889,7 +2891,8 @@ def show_topic_results(questions):
             if question:
                 st.write(f"**Explanation**: {question['explanation']}")
                 difficulty = question.get('difficulty', 'medium')
-                st.caption(f"Concept: {question['concept']} | Difficulty: {difficulty.upper()}")
+                concept = question.get('concept', 'General Knowledge')
+                st.caption(f"Concept: {concept} | Difficulty: {difficulty.upper()}")
 
     st.markdown("---")
 
@@ -3199,7 +3202,9 @@ def show_challenge_mode():
 
     # Display question with styling
     st.markdown(f"### Q{current_idx + 1}: {question['q']}")
-    st.caption(f"📌 **Concept**: {question['concept']} | **Difficulty**: HARD ⚠️ | **Ref**: {question['ref']}")
+    concept = question.get('concept', 'General Knowledge')
+    ref = question.get('ref', '')
+    st.caption(f"📌 **Concept**: {concept} | **Difficulty**: HARD ⚠️ | **Ref**: {ref}")
 
     # BUG FIX: Restore previous answer if it exists (so students can't cheat by going back)
     previous_answer = None
@@ -3268,7 +3273,7 @@ def show_challenge_mode():
                     'correct_answer': question['answer'],
                     'is_correct': is_correct,
                     'confidence': confidence,
-                    'concept': question['concept']
+                    'concept': question.get('concept', 'General Knowledge')
                 }
 
                 # Track question for intelligent selection (Tier 1)
@@ -3379,7 +3384,8 @@ def show_challenge_results(questions):
                         st.write(f"**Your Answer**: {answer['user_answer']}")
                         st.write(f"**Correct Answer**: {answer['correct_answer']}")
                         st.write(f"**Why?** {question['explanation']}")
-                        st.caption(f"Concept: {question['concept']}")
+                        concept = question.get('concept', 'General Knowledge')
+                        st.caption(f"Concept: {concept}")
 
     st.markdown("---")
 
