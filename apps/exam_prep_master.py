@@ -1067,44 +1067,102 @@ def init_session():
 # ==================== USER LOGIN ====================
 
 def show_login():
-    """User login/identification screen"""
+    """User login/identification screen with professional styling"""
     st.set_page_config(page_title="Exam Prep - Login", page_icon="🧪", layout="wide")
+
+    # Apply custom styling
+    st.markdown("""
+    <style>
+    .login-header {
+        background: linear-gradient(135deg, #3B82F6 0%, #A855F7 100%);
+        padding: 40px 20px;
+        border-radius: 12px;
+        color: white;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .login-header h1 {
+        margin: 0;
+        font-size: 2.5em;
+        font-weight: 700;
+    }
+    .login-header p {
+        margin: 10px 0 0 0;
+        font-size: 1.1em;
+        opacity: 0.9;
+    }
+    .login-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .input-label {
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 8px;
+        display: block;
+    }
+    .recent-users-section {
+        background: #F9FAFB;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 25px;
+    }
+    .recent-users-title {
+        font-size: 1.1em;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 15px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        st.title("🧪 SCIENCE EXAM PREP")
-        st.subheader("Multi-User Practice System")
-        st.markdown("---")
+        # Header banner
+        st.markdown("""
+        <div class="login-header">
+            <h1>🧪 Science Exam Prep</h1>
+            <p>Master Your Science Skills</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-        st.write("### 👋 Welcome! What's your name?")
-        st.info("💡 Enter your name to start or resume learning. Your progress will be saved automatically!")
+        # Login card
+        st.markdown('<div class="login-card">', unsafe_allow_html=True)
 
+        st.markdown("<label class='input-label'>What's your name?</label>", unsafe_allow_html=True)
         user_name = st.text_input(
             "Enter your name:",
             placeholder="e.g., Aanya, Chan Chan, or your name",
-            key="login_name"
+            key="login_name",
+            label_visibility="collapsed"
         )
 
-        if st.button("Start Learning →", use_container_width=True, type="primary"):
-            if user_name and user_name.strip():
-                # Get or create user in database
-                user_id = get_or_create_user(user_name.strip())
-                if user_id:
-                    st.session_state.user_id = user_id
-                    st.session_state.user_name = user_name.strip()
-                    st.session_state.mode = 'home'
-                    st.success(f"Welcome, {user_name.strip()}! 🎉")
-                    time.sleep(1)
-                    st.rerun()
+        # Start Learning button
+        col_btn1, col_btn2 = st.columns([2, 1])
+        with col_btn1:
+            if st.button("🚀 Start Learning", use_container_width=True, type="primary"):
+                if user_name and user_name.strip():
+                    # Get or create user in database
+                    user_id = get_or_create_user(user_name.strip())
+                    if user_id:
+                        st.session_state.user_id = user_id
+                        st.session_state.user_name = user_name.strip()
+                        st.session_state.mode = 'home'
+                        st.success(f"Welcome, {user_name.strip()}! 🎉")
+                        time.sleep(1)
+                        st.rerun()
+                    else:
+                        st.error("Error creating user. Please try again.")
                 else:
-                    st.error("Error creating user. Please try again.")
-            else:
-                st.error("Please enter your name to continue!")
+                    st.error("Please enter your name to continue!")
 
-        st.markdown("---")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-        # Show existing users (for easy access)
-        st.write("### 🔄 Recent Users")
+        # Recent users section
+        st.markdown('<div class="recent-users-section">', unsafe_allow_html=True)
+        st.markdown('<div class="recent-users-title">🔄 Quick Login - Recent Users</div>', unsafe_allow_html=True)
         existing_users = get_all_users()
         if existing_users:
             cols = st.columns(min(3, len(existing_users)))
@@ -1116,12 +1174,12 @@ def show_login():
                         st.session_state.mode = 'home'
                         st.rerun()
         else:
-            st.caption("No previous users yet. Enter your name above!")
+            st.caption("💡 No previous users yet. Enter your name above to get started!")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown("---")
-
-        # Admin access
+        # Admin access (collapsed by default)
         with st.expander("🔑 Admin Access"):
+            st.caption("Admin-only section for progress monitoring")
             admin_password = st.text_input("Admin Password:", type="password", key="admin_pass")
             if st.button("Access Admin Dashboard", use_container_width=True):
                 if admin_password == "admin123":  # Simple password - change in production
