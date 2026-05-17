@@ -1595,7 +1595,7 @@ def show_chapter_content(chapter_name):
     col1, col2, col3 = st.columns([4, 1, 1])
     with col3:
         if st.button("← Back to Chapters", key=f"back_{chapter_name}"):
-            st.session_state.mode = 'chapter_select'
+            st.session_state.mode = 'topic_select'
             st.rerun()
 
 
@@ -1603,15 +1603,21 @@ def show_chapter_flashcards(chapter_name):
     """Display flashcards for chapter"""
     try:
         # Import chapter module based on name
-        if chapter_name == "🌱 Ch 1: Reproduction":
-            from components import ch1_reproduction
-            flashcards = ch1_reproduction.FLASHCARDS
-        elif chapter_name == "💧 Ch 2: Cycles in Water":
-            from components import ch2_water_new
-            flashcards = ch2_water_new.FLASHCARDS if hasattr(ch2_water_new, 'FLASHCARDS') else []
-        elif chapter_name == "⚡ Ch 5: Electrical Systems":
-            # Will implement Ch5
-            flashcards = []
+        if "Ch 1" in chapter_name or "Reproduction" in chapter_name:
+            try:
+                from modules.ch1_reproduction import FLASHCARDS as flashcards
+            except ImportError:
+                st.warning("Could not load Ch1 flashcards")
+                return
+        elif "Ch 2" in chapter_name or "Water" in chapter_name:
+            try:
+                from modules.ch2_water import FLASHCARDS as flashcards
+            except ImportError:
+                st.warning("Ch2 flashcards coming soon")
+                return
+        elif "Ch 5" in chapter_name or "Electrical" in chapter_name:
+            st.info("Ch5 flashcards will be added in next phase")
+            return
         else:
             st.warning("Chapter not found")
             return
@@ -1753,15 +1759,49 @@ def show_chapter_quiz(chapter_name):
 
 def show_chapter_minigame(chapter_name):
     """Display mini-game for chapter"""
-    st.write("Mini-games are coming soon! In the meantime, challenge yourself with more quiz questions above.")
+    try:
+        from components.minigames import SequencingGame, DragDropGame
 
-    # Placeholder for future mini-game implementation
-    if "🌱 Ch 1" in chapter_name:
-        st.info("🎮 **Plant the Seed Game**: Sequence plant life cycle stages in correct order")
-    elif "💧 Ch 2" in chapter_name:
-        st.info("🎮 **Water Cycle Sorter**: Drag items into correct water cycle stages")
-    elif "⚡ Ch 5" in chapter_name:
-        st.info("🎮 **Circuit Builder**: Build circuits by connecting components in order")
+        if "Ch 1" in chapter_name or "Reproduction" in chapter_name:
+            st.write("🎮 **Plant the Seed Game**: Arrange plant life cycle stages in correct order")
+
+            stages = [
+                'Germination: Seed sprouts',
+                'Growth: Plant develops leaves',
+                'Photosynthesis: Plant makes food',
+                'Flowering: Plant produces flowers',
+                'Pollination: Pollen transferred',
+                'Fertilization: Seed development begins'
+            ]
+
+            correct_order = stages.copy()
+
+            is_correct = SequencingGame.create_sequence_game(stages, correct_order, "Plant Life Cycle Sequencing")
+
+            if is_correct:
+                st.success("✅ Perfect! You've completed the Plant the Seed game!")
+                # Track the game completion
+                track_question_answer(
+                    st.session_state.user_id,
+                    'ch1_minigame_plant',
+                    True,
+                    'medium',
+                    chapter='Reproduction',
+                    quiz_mode='minigame'
+                )
+
+        elif "Ch 2" in chapter_name or "Water" in chapter_name:
+            st.write("🎮 **Water Cycle Sorter**: Drag items into correct water cycle stages")
+            st.info("Coming soon - Drag & Drop mini-game implementation in progress")
+
+        elif "Ch 5" in chapter_name or "Electrical" in chapter_name:
+            st.write("🎮 **Circuit Builder**: Build circuits by connecting components in order")
+            st.info("Coming soon - Circuit builder game implementation in progress")
+        else:
+            st.info("Mini-games coming soon for this chapter!")
+
+    except ImportError as e:
+        st.error(f"Could not load mini-games: {e}")
 
 
 def show_chapter_brain_drainers(chapter_name):
