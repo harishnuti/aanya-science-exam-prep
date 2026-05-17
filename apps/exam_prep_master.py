@@ -1105,7 +1105,7 @@ def queue_next_question(user_id, chapter, quiz_mode):
 
 
 def get_next_question(user_id, chapter, quiz_mode, all_questions):
-    """Smart question selection with history tracking
+    """Smart question selection with history tracking and variations
     Returns: (question_dict, difficulty_level) or (None, None)
     """
     try:
@@ -1138,7 +1138,17 @@ def get_next_question(user_id, chapter, quiz_mode, all_questions):
         if unseen:
             return random.choice(unseen), 'easy'
 
-        # Step 4: All questions seen, restart from beginning
+        # Step 4: All base questions seen, generate variations (Tier 2)
+        # Only do this if we've seen many questions
+        if len(seen_questions) > 50:
+            try:
+                variations = get_all_variations_cached()
+                if variations:
+                    return random.choice(variations), 'easy'
+            except:
+                pass  # Fallback if variations fail
+
+        # Step 5: Restart from beginning of base questions
         if all_questions:
             return random.choice(all_questions), 'easy'
 
@@ -1149,6 +1159,102 @@ def get_next_question(user_id, chapter, quiz_mode, all_questions):
         if all_questions:
             return random.choice(all_questions), 'easy'
         return None, None
+
+
+# ==================== TIER 2: QUESTION VARIATION GENERATOR ====================
+
+def generate_question_variation(template, variation_num=1):
+    """Generate a single variation from a parameterized template
+    Args:
+        template: Template dict with template, answer_formula, parameters, etc.
+        variation_num: Which variation number (for generating unique questions)
+    Returns:
+        Dictionary with generated question text, answer, difficulty, etc.
+    """
+    import itertools
+
+    # Get all parameter combinations
+    param_names = list(template.get('parameters', {}).keys())
+    if not param_names:
+        # No parameters, return template as-is
+        return {
+            'id': f"{template.get('template_id', 'unknown')}_v0",
+            'type': 'MCQ',
+            'q': template['template'],
+            'answer': template['answer_formula']({}),
+            'explanation': f"Based on concept: {template.get('concept', 'Unknown')}",
+            'ref': template.get('chapter', 'General'),
+            'concept': template.get('concept', 'Unknown'),
+            'difficulty': template.get('difficulty', 'medium'),
+            'options': ['Yes', 'No', 'Sometimes', 'Cannot determine'],
+        }
+
+    # Sample random values from parameter ranges
+    params = {}
+    for param_name in param_names:
+        param_values = template['parameters'][param_name]
+        # Use variation_num to pick different values for each variation
+        if isinstance(param_values, list):
+            idx = (variation_num + hash(param_name)) % len(param_values)
+            params[param_name] = param_values[idx]
+
+    # Generate question text
+    question_text = template['template'].format(**params)
+
+    # Compute answer using the formula
+    answer = str(template['answer_formula'](params))
+
+    # Create variation object
+    variation = {
+        'id': f"{template.get('template_id', 'unknown')}_v{variation_num}",
+        'type': 'MCQ',
+        'q': question_text,
+        'answer': answer,
+        'explanation': f"Concept: {template.get('concept', 'Unknown')} | Parameters: {params}",
+        'ref': f"Template: {template.get('chapter', 'General')}",
+        'concept': template.get('concept', 'Unknown'),
+        'difficulty': template.get('difficulty', 'medium'),
+        'parameters': params,
+    }
+
+    return variation
+
+
+def generate_all_variations(num_per_template=10):
+    """Generate all variations from templates
+    Args:
+        num_per_template: How many variations to generate per template
+    Returns:
+        List of all generated variation questions
+    """
+    from src.components.question_templates import QUESTION_TEMPLATES
+
+    all_variations = []
+
+    for template_id, template in QUESTION_TEMPLATES.items():
+        template['template_id'] = template_id  # Add ID to template
+
+        for var_num in range(num_per_template):
+            try:
+                variation = generate_question_variation(template, var_num)
+                all_variations.append(variation)
+            except Exception as e:
+                # Skip templates that fail
+                continue
+
+    return all_variations
+
+
+# Cache for generated variations (to avoid regenerating)
+_variation_cache = {}
+
+def get_all_variations_cached(force_refresh=False):
+    """Get all variations, using cache if available"""
+    if not _variation_cache or force_refresh:
+        _variation_cache['variations'] = generate_all_variations()
+        _variation_cache['count'] = len(_variation_cache['variations'])
+
+    return _variation_cache.get('variations', [])
 
 
 # ==================== DISPLAY FUNCTIONS ====================
