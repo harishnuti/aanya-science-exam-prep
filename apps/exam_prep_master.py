@@ -26,7 +26,9 @@ from utils.database import (
     get_user_weak_areas, export_user_data_csv, init_user_gamification,
     add_xp, get_user_xp_and_level, update_streak, unlock_achievement,
     get_user_achievements, update_chapter_progress, get_chapter_progress,
-    save_minigame_score
+    save_minigame_score, log_user_activity, start_user_session, end_user_session,
+    record_section_visit, record_quiz_start, record_quiz_complete, record_game_play,
+    get_user_activity_log, get_activity_summary, get_admin_activity_dashboard
 )
 
 # Initialize database on app load
@@ -1150,6 +1152,10 @@ def show_login():
                         st.session_state.user_id = user_id
                         st.session_state.user_name = user_name.strip()
                         st.session_state.mode = 'home'
+                        # Start session tracking
+                        st.session_state.session_id = start_user_session(user_id)
+                        # Log login activity
+                        log_user_activity(user_id, 'login', action_detail='User logged in')
                         st.success(f"Welcome, {user_name.strip()}! 🎉")
                         time.sleep(1)
                         st.rerun()
@@ -1172,6 +1178,10 @@ def show_login():
                         st.session_state.user_id = user['user_id']
                         st.session_state.user_name = user['name']
                         st.session_state.mode = 'home'
+                        # Start session tracking
+                        st.session_state.session_id = start_user_session(user['user_id'])
+                        # Log login activity
+                        log_user_activity(user['user_id'], 'login', action_detail='User logged in')
                         st.rerun()
         else:
             st.caption("💡 No previous users yet. Enter your name above to get started!")
@@ -1323,6 +1333,115 @@ def show_admin_dashboard():
                     file_name=f"{selected_user['name']}_progress.csv",
                     mime="text/csv"
                 )
+
+    st.markdown("---")
+    st.write("### 📈 User Activity Analytics")
+
+    # Get activity dashboard data
+    activity_dashboard = get_admin_activity_dashboard()
+
+    # Activity summary metrics
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Total Activities", activity_dashboard['total_activities'])
+    with col2:
+        total_hours = round(activity_dashboard['total_time_seconds'] / 3600, 1)
+        st.metric("Total Time (Hours)", total_hours)
+    with col3:
+        avg_per_user = round(activity_dashboard['total_activities'] / activity_dashboard['total_users'], 1) if activity_dashboard['total_users'] > 0 else 0
+        st.metric("Avg Activities/User", avg_per_user)
+    with col4:
+        st.metric("Activity Types", len(activity_dashboard['activities_by_type']))
+
+    # Activities by type
+    col1, col2 = st.columns(2)
+    with col1:
+        st.write("#### Activity Types")
+        activity_types_df = pd.DataFrame([
+            {'Activity': k, 'Count': v}
+            for k, v in activity_dashboard['activities_by_type'].items()
+        ])
+        st.dataframe(activity_types_df, use_container_width=True)
+
+    with col2:
+        st.write("#### Most Active Users")
+        if activity_dashboard['most_active_users']:
+            active_users_df = pd.DataFrame(activity_dashboard['most_active_users'])
+            st.dataframe(active_users_df, use_container_width=True)
+
+    # Popular chapters and sections
+    col1, col2 = st.columns(2)
+    with col1:
+        st.write("#### Popular Chapters")
+        if activity_dashboard['popular_chapters']:
+            chapters_df = pd.DataFrame(activity_dashboard['popular_chapters'])
+            st.dataframe(chapters_df, use_container_width=True)
+
+    with col2:
+        st.write("#### Popular Sections")
+        if activity_dashboard['popular_sections']:
+            sections_df = pd.DataFrame(activity_dashboard['popular_sections'])
+            st.dataframe(sections_df, use_container_width=True)
+
+    # Individual user activity log
+    st.markdown("---")
+    st.write("### 📋 Individual User Activity Log")
+
+    selected_activity_user = st.selectbox(
+        "Select user to view activity log:",
+        options=[u['user_id'] for u in all_users],
+        format_func=lambda uid: next((u['name'] for u in all_users if u['user_id'] == uid), "Unknown"),
+        key="activity_user_select"
+    )
+
+    if selected_activity_user:
+        activity_log = get_user_activity_log(selected_activity_user, limit=50)
+        activity_summary = get_activity_summary(selected_activity_user)
+
+        # Summary for this user
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Total Activities", len(activity_log))
+        with col2:
+            total_time = activity_summary['total_time_seconds']
+            total_minutes = round(total_time / 60, 1)
+            st.metric("Time Spent (Minutes)", total_minutes)
+        with col3:
+            st.metric("Sessions", activity_summary['total_sessions'])
+
+        # Activity log table
+        if activity_log:
+            activity_df = pd.DataFrame([
+                {
+                    'Time': a['timestamp'][-8:],  # HH:MM:SS
+                    'Activity': a['activity_type'],
+                    'Chapter': a['chapter_name'] or '-',
+                    'Section': a['section_name'] or '-',
+                    'Details': a['action_detail'] or '-'
+                }
+                for a in activity_log
+            ])
+            st.dataframe(activity_df, use_container_width=True)
+
+            # Chapters visited by this user
+            if activity_summary['chapters_visited']:
+                st.write("#### Chapters Visited")
+                chapters_visited_df = pd.DataFrame([
+                    {'Chapter': k, 'Visits': v}
+                    for k, v in activity_summary['chapters_visited'].items()
+                ])
+                st.dataframe(chapters_visited_df, use_container_width=True)
+
+            # Sections visited by this user
+            if activity_summary['sections_visited']:
+                st.write("#### Sections Visited")
+                sections_visited_df = pd.DataFrame([
+                    {'Section': k, 'Visits': v}
+                    for k, v in activity_summary['sections_visited'].items()
+                ])
+                st.dataframe(sections_visited_df, use_container_width=True)
+        else:
+            st.info("No activity logged for this user yet")
 
     st.markdown("---")
     st.write("### 📊 All Users Comparison")
@@ -1733,6 +1852,11 @@ def show_home():
             st.write(f"👤 **{st.session_state.user_name}**")
         with col3b:
             if st.button("🚪 Logout"):
+                # Log logout activity and end session
+                if st.session_state.user_id:
+                    log_user_activity(st.session_state.user_id, 'logout', action_detail='User logged out')
+                    if hasattr(st.session_state, 'session_id') and st.session_state.session_id:
+                        end_user_session(st.session_state.session_id)
                 st.session_state.mode = 'login'
                 st.session_state.user_id = None
                 st.session_state.user_name = None
@@ -1986,6 +2110,8 @@ def show_chapter_content(chapter_name):
 
 def show_chapter_flashcards(chapter_name):
     """Display flashcards for chapter"""
+    # Log activity
+    record_section_visit(st.session_state.user_id, chapter_name, 'Learn')
     try:
         # Get topic key from chapter name
         if "Ch 1" in chapter_name or "Reproduction" in chapter_name:
@@ -2071,6 +2197,8 @@ def show_chapter_flashcards(chapter_name):
 
 def show_chapter_matching(chapter_name):
     """Display matching pairs for chapter"""
+    # Log activity
+    record_section_visit(st.session_state.user_id, chapter_name, 'Match')
     try:
         # Get topic key from chapter name
         if "Ch 1" in chapter_name or "Reproduction" in chapter_name:
@@ -2222,6 +2350,8 @@ def show_chapter_matching(chapter_name):
 
 def show_chapter_quiz(chapter_name):
     """Display practice quiz for chapter - answers hidden until shown"""
+    # Log activity
+    record_section_visit(st.session_state.user_id, chapter_name, 'Practice')
     try:
         # Get questions for chapter from COMPREHENSIVE_QUESTIONS
         if "🌱 Ch 1" in chapter_name or "Reproduction" in chapter_name:
@@ -2345,6 +2475,8 @@ def show_chapter_quiz(chapter_name):
 
 def show_chapter_minigame(chapter_name):
     """Display interactive mini-game for chapter"""
+    # Log activity
+    record_section_visit(st.session_state.user_id, chapter_name, 'Game')
     try:
         from components.fun_games import play_game_for_chapter
 
@@ -2386,6 +2518,8 @@ def show_chapter_minigame(chapter_name):
 
 def show_chapter_brain_drainers(chapter_name):
     """Display brain drainer challenge questions"""
+    # Log activity
+    record_section_visit(st.session_state.user_id, chapter_name, 'Challenge')
     st.write("PSLE-style tricky questions designed to test deeper understanding!")
 
     try:
@@ -2454,6 +2588,8 @@ def show_chapter_brain_drainers(chapter_name):
 
 def show_chapter_progress(chapter_name):
     """Display chapter progress and mastery stats"""
+    # Log activity
+    record_section_visit(st.session_state.user_id, chapter_name, 'Progress')
     st.write("### Your Chapter Progress")
 
     try:

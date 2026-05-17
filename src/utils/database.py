@@ -130,6 +130,37 @@ def init_database():
         )
     """)
 
+    # User activity tracking table - comprehensive logging
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS user_activity (
+            activity_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            activity_type TEXT NOT NULL,
+            chapter_name TEXT,
+            section_name TEXT,
+            action_detail TEXT,
+            timestamp TEXT NOT NULL,
+            session_duration_seconds REAL,
+            ip_address TEXT,
+            device_info TEXT,
+            FOREIGN KEY (user_id) REFERENCES users(user_id)
+        )
+    """)
+
+    # Session tracking table - for tracking user sessions (login/logout)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS user_sessions (
+            session_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            login_time TEXT NOT NULL,
+            logout_time TEXT,
+            session_duration_seconds REAL,
+            pages_visited TEXT,
+            total_activities INTEGER DEFAULT 0,
+            FOREIGN KEY (user_id) REFERENCES users(user_id)
+        )
+    """)
+
     conn.commit()
     conn.close()
 
@@ -781,3 +812,359 @@ def delete_user_data(user_id: int) -> None:
 
     conn.commit()
     conn.close()
+
+
+# ==================== USER ACTIVITY TRACKING ====================
+
+def log_user_activity(user_id: int, activity_type: str, chapter_name: str = None,
+                      section_name: str = None, action_detail: str = None,
+                      session_duration: float = None, device_info: str = None) -> int:
+    """
+    Log user activity to track what users are doing
+    Activity types: 'login', 'logout', 'view_flashcard', 'view_matching', 'start_quiz',
+                   'submit_quiz', 'play_game', 'view_progress', 'view_challenge', etc.
+    Returns: activity_id
+    """
+    conn = sqlite3.connect(str(DB_PATH))
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO user_activity
+        (user_id, activity_type, chapter_name, section_name, action_detail,
+         timestamp, session_duration_seconds, device_info)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (user_id, activity_type, chapter_name, section_name, action_detail,
+          datetime.now().isoformat(), session_duration, device_info))
+
+    conn.commit()
+    activity_id = cursor.lastrowid
+    conn.close()
+    return activity_id
+
+
+def start_user_session(user_id: int) -> int:
+    """
+    Start a new user session (login)
+    Returns: session_id
+    """
+    conn = sqlite3.connect(str(DB_PATH))
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO user_sessions (user_id, login_time, pages_visited, total_activities)
+        VALUES (?, ?, ?, ?)
+    """, (user_id, datetime.now().isoformat(), json.dumps([]), 0))
+
+    conn.commit()
+    session_id = cursor.lastrowid
+    conn.close()
+    return session_id
+
+
+def end_user_session(session_id: int) -> None:
+    """
+    End user session (logout) and calculate duration
+    """
+    conn = sqlite3.connect(str(DB_PATH))
+    cursor = conn.cursor()
+
+    # Get login time
+    cursor.execute("SELECT login_time FROM user_sessions WHERE session_id = ?", (session_id,))
+    result = cursor.fetchone()
+
+    if result:
+        login_time = datetime.fromisoformat(result[0])
+        logout_time = datetime.now()
+        duration = (logout_time - login_time).total_seconds()
+
+        cursor.execute("""
+            UPDATE user_sessions
+            SET logout_time = ?, session_duration_seconds = ?
+            WHERE session_id = ?
+        """, (logout_time.isoformat(), duration, session_id))
+
+    conn.commit()
+    conn.close()
+
+
+def record_section_visit(user_id: int, chapter_name: str, section_name: str, session_id: int = None) -> None:
+    """
+    Record when user visits a section (Learn, Match, Practice, Game, Challenge, Progress)
+    """
+    log_user_activity(
+        user_id=user_id,
+        activity_type='section_view',
+        chapter_name=chapter_name,
+        section_name=section_name,
+        action_detail=f'Viewed {section_name} tab in {chapter_name}'
+    )
+
+    # Update session if provided
+    if session_id:
+        conn = sqlite3.connect(str(DB_PATH))
+        cursor = conn.cursor()
+
+        # Get current pages_visited
+        cursor.execute("SELECT pages_visited FROM user_sessions WHERE session_id = ?", (session_id,))
+        result = cursor.fetchone()
+
+        if result:
+            pages = json.loads(result[0])
+            pages.append({
+                'page': f'{chapter_name}/{section_name}',
+                'timestamp': datetime.now().isoformat()
+            })
+
+            cursor.execute("""
+                UPDATE user_sessions
+                SET pages_visited = ?, total_activities = total_activities + 1
+                WHERE session_id = ?
+            """, (json.dumps(pages), session_id))
+
+        conn.commit()
+        conn.close()
+
+
+def record_quiz_start(user_id: int, chapter_name: str, quiz_type: str) -> None:
+    """
+    Record when user starts a quiz
+    """
+    log_user_activity(
+        user_id=user_id,
+        activity_type='quiz_start',
+        chapter_name=chapter_name,
+        section_name='Practice',
+        action_detail=f'Started {quiz_type} quiz in {chapter_name}'
+    )
+
+
+def record_quiz_complete(user_id: int, chapter_name: str, score: int, accuracy: float) -> None:
+    """
+    Record when user completes a quiz
+    """
+    log_user_activity(
+        user_id=user_id,
+        activity_type='quiz_complete',
+        chapter_name=chapter_name,
+        section_name='Practice',
+        action_detail=f'Completed quiz: Score {score}, Accuracy {accuracy:.1f}%'
+    )
+
+
+def record_game_play(user_id: int, chapter_name: str, game_name: str, score: int = None) -> None:
+    """
+    Record when user plays a game
+    """
+    detail = f'Played {game_name}'
+    if score is not None:
+        detail += f': Score {score}'
+
+    log_user_activity(
+        user_id=user_id,
+        activity_type='game_play',
+        chapter_name=chapter_name,
+        section_name='Game',
+        action_detail=detail
+    )
+
+
+def get_user_activity_log(user_id: int, limit: int = 100) -> list:
+    """
+    Get activity log for a user
+    Returns: list of activities sorted by recent first
+    """
+    conn = sqlite3.connect(str(DB_PATH))
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT activity_id, activity_type, chapter_name, section_name, action_detail,
+               timestamp, session_duration_seconds
+        FROM user_activity
+        WHERE user_id = ?
+        ORDER BY timestamp DESC
+        LIMIT ?
+    """, (user_id, limit))
+
+    results = cursor.fetchall()
+    conn.close()
+
+    activities = []
+    for row in results:
+        activities.append({
+            'activity_id': row[0],
+            'activity_type': row[1],
+            'chapter_name': row[2],
+            'section_name': row[3],
+            'action_detail': row[4],
+            'timestamp': row[5],
+            'session_duration': row[6]
+        })
+    return activities
+
+
+def get_user_session_history(user_id: int) -> list:
+    """
+    Get session history for a user (login/logout sessions)
+    """
+    conn = sqlite3.connect(str(DB_PATH))
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT session_id, login_time, logout_time, session_duration_seconds,
+               pages_visited, total_activities
+        FROM user_sessions
+        WHERE user_id = ?
+        ORDER BY login_time DESC
+    """, (user_id,))
+
+    results = cursor.fetchall()
+    conn.close()
+
+    sessions = []
+    for row in results:
+        pages = []
+        if row[4]:
+            pages = json.loads(row[4])
+
+        sessions.append({
+            'session_id': row[0],
+            'login_time': row[1],
+            'logout_time': row[2],
+            'duration_seconds': row[3],
+            'pages_visited': pages,
+            'total_activities': row[5]
+        })
+    return sessions
+
+
+def get_activity_summary(user_id: int) -> dict:
+    """
+    Get summary statistics of user activities
+    """
+    conn = sqlite3.connect(str(DB_PATH))
+    cursor = conn.cursor()
+
+    # Total activities by type
+    cursor.execute("""
+        SELECT activity_type, COUNT(*) as count
+        FROM user_activity
+        WHERE user_id = ?
+        GROUP BY activity_type
+    """, (user_id,))
+    activity_summary = dict(cursor.fetchall())
+
+    # Total time spent (from sessions)
+    cursor.execute("""
+        SELECT SUM(session_duration_seconds) as total_time, COUNT(*) as total_sessions
+        FROM user_sessions
+        WHERE user_id = ?
+    """, (user_id,))
+    result = cursor.fetchone()
+    total_time = result[0] or 0
+    total_sessions = result[1] or 0
+
+    # Most visited chapters
+    cursor.execute("""
+        SELECT chapter_name, COUNT(*) as visit_count
+        FROM user_activity
+        WHERE user_id = ? AND chapter_name IS NOT NULL
+        GROUP BY chapter_name
+        ORDER BY visit_count DESC
+    """, (user_id,))
+    chapter_visits = cursor.fetchall()
+
+    # Most visited sections
+    cursor.execute("""
+        SELECT section_name, COUNT(*) as visit_count
+        FROM user_activity
+        WHERE user_id = ? AND section_name IS NOT NULL
+        GROUP BY section_name
+        ORDER BY visit_count DESC
+    """, (user_id,))
+    section_visits = cursor.fetchall()
+
+    conn.close()
+
+    return {
+        'activity_types': activity_summary,
+        'total_time_seconds': total_time,
+        'total_sessions': total_sessions,
+        'average_session_duration': round(total_time / total_sessions, 2) if total_sessions > 0 else 0,
+        'chapters_visited': dict(chapter_visits),
+        'sections_visited': dict(section_visits)
+    }
+
+
+def get_admin_activity_dashboard() -> dict:
+    """
+    Get dashboard data showing all user activities (for admin view)
+    """
+    conn = sqlite3.connect(str(DB_PATH))
+    cursor = conn.cursor()
+
+    # Total users
+    cursor.execute("SELECT COUNT(*) FROM users")
+    total_users = cursor.fetchone()[0]
+
+    # Total activities
+    cursor.execute("SELECT COUNT(*) FROM user_activity")
+    total_activities = cursor.fetchone()[0]
+
+    # Activities by type
+    cursor.execute("""
+        SELECT activity_type, COUNT(*) as count
+        FROM user_activity
+        GROUP BY activity_type
+    """)
+    activities_by_type = dict(cursor.fetchall())
+
+    # Most active users
+    cursor.execute("""
+        SELECT u.name, COUNT(a.activity_id) as activity_count
+        FROM users u
+        LEFT JOIN user_activity a ON u.user_id = a.user_id
+        GROUP BY u.user_id, u.name
+        ORDER BY activity_count DESC
+        LIMIT 10
+    """)
+    most_active_users = [{'name': row[0], 'activities': row[1]} for row in cursor.fetchall()]
+
+    # Popular chapters
+    cursor.execute("""
+        SELECT chapter_name, COUNT(*) as visit_count
+        FROM user_activity
+        WHERE chapter_name IS NOT NULL
+        GROUP BY chapter_name
+        ORDER BY visit_count DESC
+    """)
+    popular_chapters = [{'chapter': row[0], 'visits': row[1]} for row in cursor.fetchall()]
+
+    # Popular sections
+    cursor.execute("""
+        SELECT section_name, COUNT(*) as visit_count
+        FROM user_activity
+        WHERE section_name IS NOT NULL
+        GROUP BY section_name
+        ORDER BY visit_count DESC
+    """)
+    popular_sections = [{'section': row[0], 'visits': row[1]} for row in cursor.fetchall()]
+
+    # Total time spent by all users
+    cursor.execute("""
+        SELECT SUM(session_duration_seconds) as total_time
+        FROM user_sessions
+    """)
+    result = cursor.fetchone()
+    total_time = result[0] or 0
+
+    conn.close()
+
+    return {
+        'total_users': total_users,
+        'total_activities': total_activities,
+        'activities_by_type': activities_by_type,
+        'most_active_users': most_active_users,
+        'popular_chapters': popular_chapters,
+        'popular_sections': popular_sections,
+        'total_time_seconds': total_time
+    }
