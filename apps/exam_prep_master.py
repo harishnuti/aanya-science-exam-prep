@@ -1661,17 +1661,19 @@ def display_question(question, num, total):
             previous_answer = st.session_state.answers[question['id']].get('user_answer')
             previous_confidence = st.session_state.answers[question['id']].get('confidence', 3)
 
-        # Find index of previous answer in options (if exists)
-        answer_index = 0
-        if previous_answer and previous_answer in question['options']:
-            answer_index = question['options'].index(previous_answer)
+        # FIX: Only set index if user previously answered this question
+        # For new questions, don't set a default index so user MUST select an answer
+        radio_kwargs = {
+            "label": "Select your answer:",
+            "options": question['options'],
+            "key": f"q_{question['id']}"
+        }
 
-        answer = st.radio(
-            "Select your answer:",
-            question['options'],
-            index=answer_index,  # ← RESTORED: Show previous selection
-            key=f"q_{question['id']}"
-        )
+        # Only add index parameter if there's a previous answer
+        if previous_answer and previous_answer in question['options']:
+            radio_kwargs["index"] = question['options'].index(previous_answer)
+
+        answer = st.radio(**radio_kwargs)
         confidence = st.slider(
             "How confident are you? (1=Guess, 5=Very Sure)",
             1, 5, previous_confidence,  # ← RESTORED: Show previous confidence
@@ -3071,18 +3073,20 @@ def show_challenge_mode():
         previous_answer = st.session_state[challenge_key].get('user_answer')
         previous_confidence = st.session_state[challenge_key].get('confidence', 2)
 
-    # Find index of previous answer in options (if exists)
-    answer_index = 0
+    # FIX: Only set index if user previously answered this question
+    # For new questions, don't set a default index so user MUST select an answer
+    radio_kwargs = {
+        "label": "Select your answer (Read carefully - all look similar!):",
+        "options": question['options'],
+        "key": f"ch_q_{question['id']}"
+    }
+
+    # Only add index parameter if there's a previous answer
     if previous_answer and previous_answer in question['options']:
-        answer_index = question['options'].index(previous_answer)
+        radio_kwargs["index"] = question['options'].index(previous_answer)
 
     # Options with visual styling
-    answer = st.radio(
-        "Select your answer (Read carefully - all look similar!):",
-        question['options'],
-        index=answer_index,  # ← RESTORED: Show previous selection
-        key=f"ch_q_{question['id']}"
-    )
+    answer = st.radio(**radio_kwargs)
 
     confidence = st.slider(
         "How confident are you? (1=Just guessing, 5=Very sure)",
