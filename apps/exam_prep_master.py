@@ -2094,46 +2094,88 @@ def show_chapter_matching(chapter_name):
             st.info("Matching pairs coming soon for this chapter!")
             return
 
-        st.write("**Match the concepts on the left with their definitions on the right.**")
-        st.info(f"There are {len(pairs)} pairs to match.")
+        st.write("**Match each concept on the left with the correct definition from the dropdown.**")
+        st.info(f"Complete all {len(pairs)} matching pairs")
 
-        # Display all pairs in two columns
-        col1, col2 = st.columns(2)
-
-        # Get first half and shuffle second half to make it challenging
+        # Get concepts and shuffle definitions
         import random
         left_items = [item[0] for item in pairs]
         right_items = [item[1] for item in pairs]
         right_shuffled = right_items.copy()
         random.shuffle(right_shuffled)
 
+        # Create a mapping of correct answers
+        correct_mapping = {item[0]: item[1] for item in pairs}
+
+        # Initialize session state for user selections
+        selection_key = f"matching_selections_{chapter_name}"
+        if selection_key not in st.session_state:
+            st.session_state[selection_key] = {}
+
+        st.markdown("---")
+
+        # Display interactive matching interface
+        user_selections = st.session_state[selection_key]
+        completed_matches = 0
+
+        for i, concept in enumerate(left_items, 1):
+            col1, col2, col3 = st.columns([2, 0.5, 2.5])
+
+            with col1:
+                st.write(f"**{i}. {concept}**")
+
+            with col2:
+                st.write("→")
+
+            with col3:
+                # Dropdown to select definition
+                selected_def = st.selectbox(
+                    f"Match for: {concept}",
+                    options=["-- Select --"] + right_shuffled,
+                    key=f"match_{chapter_name}_{i}",
+                    label_visibility="collapsed"
+                )
+
+                # Store selection
+                if selected_def != "-- Select --":
+                    user_selections[concept] = selected_def
+                    # Check if correct
+                    if selected_def == correct_mapping[concept]:
+                        st.success("✓")
+                        completed_matches += 1
+                    else:
+                        st.error("✗")
+                else:
+                    user_selections.pop(concept, None)
+
+        st.markdown("---")
+
+        # Progress and completion
+        progress = completed_matches / len(left_items)
+        st.progress(progress, text=f"Matched: {completed_matches}/{len(left_items)}")
+
+        # Complete button - only show if all matched
+        col1, col2 = st.columns(2)
         with col1:
-            st.subheader("Concepts")
-            for i, item in enumerate(left_items, 1):
-                st.write(f"{i}. {item}")
+            if st.button("Show Correct Answers", key=f"show_matching_{chapter_name}"):
+                st.success("**Correct Matches:**")
+                for concept, definition in pairs:
+                    st.write(f"✓ **{concept}** → *{definition}*")
 
         with col2:
-            st.subheader("Definitions")
-            for i, item in enumerate(right_shuffled, 1):
-                st.write(f"• {item}")
-
-        # Show answer button
-        if st.button("Show Correct Answers", key=f"show_matching_{chapter_name}"):
-            st.success("**Correct Matches:**")
-            for concept, definition in pairs:
-                st.write(f"✓ **{concept}** → *{definition}*")
-
-        # Track completion
-        if st.button("Mark as Completed", key=f"complete_matching_{chapter_name}"):
-            st.success("✅ Matching exercise completed!")
-            track_question_answer(
-                st.session_state.user_id,
-                f'{topic_key}_matching',
-                True,
-                'easy',
-                chapter=topic_key,
-                quiz_mode='matching'
-            )
+            if completed_matches == len(left_items):
+                if st.button("✅ Complete Matching", key=f"complete_matching_{chapter_name}", type="primary"):
+                    st.success("🎉 All matches correct! Exercise completed!")
+                    track_question_answer(
+                        st.session_state.user_id,
+                        f'{topic_key}_matching',
+                        True,
+                        'medium',
+                        chapter=topic_key,
+                        quiz_mode='matching'
+                    )
+            else:
+                st.caption(f"📌 Complete all {len(left_items) - completed_matches} remaining matches")
 
     except Exception as e:
         st.error(f"Error loading matching pairs: {e}")
@@ -2203,57 +2245,47 @@ def show_chapter_quiz(chapter_name):
         st.write(f"**Question {current_idx + 1}/{len(questions)}**")
         st.write(f"**Concept**: {question.get('concept', 'General')}")
 
+        # AUTO-ADVANCE: Get answer and immediately check it
         user_answer, confidence = display_question(question, current_idx + 1, len(questions))
 
-        # Create answer tracking state
-        if f"user_answer_{chapter_name}_{current_idx}" not in st.session_state:
-            st.session_state[f"user_answer_{chapter_name}_{current_idx}"] = None
-
-        # Store user answer
-        if user_answer:
-            st.session_state[f"user_answer_{chapter_name}_{current_idx}"] = user_answer
+        # Initialize answer checking state
+        answered_key = f"answered_{chapter_name}_{current_idx}"
+        if answered_key not in st.session_state:
+            st.session_state[answered_key] = False
 
         st.markdown("---")
 
-        # Action buttons
-        col1, col2, col3 = st.columns(3)
+        # If user selected an answer, check it immediately
+        if user_answer and not st.session_state[answered_key]:
+            st.session_state[answered_key] = True
+            is_correct, correct_answer = check_answer(question, user_answer)
 
-        with col1:
-            if st.button("Submit Answer", key=f"submit_{chapter_name}_{current_idx}"):
-                if user_answer:
-                    st.session_state[answer_key] = True
-                else:
-                    st.warning("Please select an answer first")
+            # Show immediate feedback
+            if is_correct:
+                st.success(f"✅ CORRECT! Great job! (+1 point)")
+                st.session_state[f"quiz_score_{chapter_name}"] += 1
+            else:
+                st.error(f"❌ Not quite right. The correct answer is: **{correct_answer}**")
 
-        # Show answer button - only if submitted
-        if st.session_state.get(answer_key, False):
+            st.info(f"**Why?** {question['explanation']}")
+
+            # Track the answer in database
+            track_question_answer(
+                st.session_state.user_id,
+                question['id'],
+                is_correct,
+                question.get('difficulty', 'medium'),
+                chapter=topic_key,
+                quiz_mode='chapter_quiz'
+            )
+
+        # Show next button only after answer is given
+        if st.session_state[answered_key]:
+            col1, col2 = st.columns([3, 1])
             with col2:
-                if st.button("📖 Show Answer & Explanation", key=f"show_answer_{chapter_name}_{current_idx}"):
-                    is_correct, correct_answer = check_answer(question, user_answer)
-
-                    if is_correct:
-                        st.success("✅ CORRECT! Great job!")
-                        st.session_state[f"quiz_score_{chapter_name}"] += 1
-                    else:
-                        st.error(f"❌ Not quite right. Correct answer: **{correct_answer}**")
-
-                    st.info(f"**Explanation**: {question['explanation']}")
-
-                    # Track the answer
-                    track_question_answer(
-                        st.session_state.user_id,
-                        question['id'],
-                        is_correct,
-                        question.get('difficulty', 'medium'),
-                        chapter=topic_key,
-                        quiz_mode='chapter_quiz'
-                    )
-
-        with col3:
-            if st.button("Next Question ➡️", key=f"next_quiz_{chapter_name}_{current_idx}"):
-                st.session_state[quiz_key] = current_idx + 1
-                st.session_state[answer_key] = False
-                st.rerun()
+                if st.button("Next Question ➡️", key=f"next_quiz_{chapter_name}_{current_idx}", use_container_width=True):
+                    st.session_state[quiz_key] = current_idx + 1
+                    st.rerun()
 
     except Exception as e:
         st.error(f"Error loading quiz: {e}")
