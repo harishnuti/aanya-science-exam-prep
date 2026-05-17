@@ -1227,7 +1227,14 @@ def generate_all_variations(num_per_template=10):
     Returns:
         List of all generated variation questions
     """
-    from src.components.question_templates import QUESTION_TEMPLATES
+    try:
+        from components.question_templates import QUESTION_TEMPLATES
+    except ImportError:
+        # Fallback if import path is different
+        try:
+            from src.components.question_templates import QUESTION_TEMPLATES
+        except ImportError:
+            return []  # Return empty if can't import
 
     all_variations = []
 
