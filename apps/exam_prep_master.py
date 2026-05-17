@@ -1605,6 +1605,16 @@ def show_practice_mode():
                     question.get('concept', 'Unknown')
                 )
 
+                # Track question for intelligent selection (Tier 1)
+                track_question_answer(
+                    st.session_state.user_id,
+                    question['id'],
+                    is_correct,
+                    question.get('difficulty', 'medium'),
+                    chapter=topic,
+                    quiz_mode='practice'
+                )
+
     with col3:
         # Only allow Next if current question has been answered
         question_answered = question['id'] in st.session_state.answers
@@ -1790,6 +1800,16 @@ def show_mock_exam():
                     confidence,
                     question.get('difficulty', 'medium'),
                     question.get('concept', 'Unknown')
+                )
+
+                # Track question for intelligent selection (Tier 1)
+                track_question_answer(
+                    st.session_state.user_id,
+                    question['id'],
+                    is_correct,
+                    question.get('difficulty', 'medium'),
+                    chapter='All',
+                    quiz_mode='mock_exam'
                 )
 
                 time.sleep(1)
@@ -2049,6 +2069,16 @@ def show_challenge_mode():
                     'confidence': confidence,
                     'concept': question['concept']
                 }
+
+                # Track question for intelligent selection (Tier 1)
+                track_question_answer(
+                    st.session_state.user_id,
+                    question['id'],
+                    is_correct,
+                    'hard',  # Challenge mode is always hard difficulty
+                    chapter=selected_topic,
+                    quiz_mode='challenge'
+                )
 
     with col3:
         question_answered = f"challenge_{question['id']}" in st.session_state
