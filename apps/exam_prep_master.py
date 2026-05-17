@@ -14,12 +14,9 @@ import json
 import sqlite3
 import random
 
-# Add src folder to path for imports (app is in apps/, src is in parent)
-src_path = str(Path(__file__).parent.parent / "src")
-sys.path.insert(0, src_path)
-
-from components.animations import MalteseDogFeedback
-from utils.database import (
+# Imports from src package (using absolute paths for Streamlit Cloud compatibility)
+from src.components.animations import MalteseDogFeedback
+from src.utils.database import (
     init_database, get_or_create_user, get_all_users, create_quiz_session,
     save_answer, end_quiz_session, get_user_sessions, get_user_stats,
     get_user_performance_by_difficulty, get_user_performance_by_concept,
