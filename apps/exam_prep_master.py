@@ -14,6 +14,11 @@ import json
 import sqlite3
 import random
 
+# Add project root to sys.path for imports (required for Streamlit Cloud)
+project_root = str(Path(__file__).parent.parent)
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 # Imports from src package (using absolute paths for Streamlit Cloud compatibility)
 from src.components.animations import MalteseDogFeedback
 from src.utils.database import (
