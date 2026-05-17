@@ -60,6 +60,16 @@ CHAPTER_FLASHCARDS = {
         {'concept': 'Asexual Reproduction', 'definition': 'Reproduction without the need for a partner'},
         {'concept': 'Gametes', 'definition': 'Sex cells (sperm and egg)'},
     ],
+    'Electrical_Systems': [
+        {'concept': 'Voltage', 'definition': 'Electric potential difference measured in volts (V); the "push" that moves electrons'},
+        {'concept': 'Current', 'definition': 'Flow of electric charge measured in amperes (A); amount of electrons moving through a wire'},
+        {'concept': 'Resistance', 'definition': 'Opposition to current flow measured in ohms (Ω); how much a material opposes electric flow'},
+        {'concept': 'Circuit', 'definition': 'Complete closed path that allows electric current to flow from + to - terminal'},
+        {'concept': 'Conductor', 'definition': 'Material that allows electric current to flow easily (e.g., copper, aluminum)'},
+        {'concept': 'Insulator', 'definition': 'Material that prevents or blocks electric current flow (e.g., rubber, plastic, wood)'},
+        {'concept': 'Series Circuit', 'definition': 'Circuit where components are connected in a single path; same current flows through all'},
+        {'concept': 'Parallel Circuit', 'definition': 'Circuit where components have separate paths; current can flow through multiple routes'},
+    ],
 }
 
 CHAPTER_MATCHING_PAIRS = {
@@ -82,6 +92,16 @@ CHAPTER_MATCHING_PAIRS = {
         ('Stigma', 'Female part of flower'),
         ('Seed Coat', 'Protects the embryo'),
         ('Cotyledon', 'Stores food for growing seed'),
+    ],
+    'Electrical_Systems': [
+        ('Copper', 'Good conductor of electricity'),
+        ('Rubber', 'Good insulator of electricity'),
+        ('Voltage', 'Electric potential difference (V)'),
+        ('Current', 'Flow of electric charge (A)'),
+        ('Series Circuit', 'Components in single path'),
+        ('Parallel Circuit', 'Components in multiple paths'),
+        ('Resistance', 'Opposition to current flow (Ω)'),
+        ('Ampere', 'Unit of electric current'),
     ],
 }
 
@@ -506,6 +526,28 @@ COMPREHENSIVE_QUESTIONS = {
                 'concept': 'Series Resistance',
                 'difficulty': 'medium'
             },
+            {
+                'id': 'e9_new',
+                'type': 'MCQ',
+                'q': 'What is the difference between voltmeter and ammeter placement?',
+                'options': ['Voltmeter in series, ammeter across', 'Voltmeter across, ammeter in series', 'Both placed the same way', 'Depends on circuit'],
+                'answer': 'Voltmeter across, ammeter in series',
+                'explanation': 'Voltmeter measures potential difference ACROSS components (parallel). Ammeter measures current THROUGH circuit (series). Wrong placement damages instruments.',
+                'ref': 'Pages 102-105',
+                'concept': 'Meter Placement',
+                'difficulty': 'medium'
+            },
+            {
+                'id': 'e10_new',
+                'type': 'MCQ',
+                'q': 'In a parallel circuit with 3 identical bulbs, compared to a series circuit, what happens?',
+                'options': ['Bulbs are dimmer', 'Bulbs are brighter', 'No change in brightness', 'Only middle bulb is bright'],
+                'answer': 'Bulbs are brighter',
+                'explanation': 'Parallel: Each bulb gets full voltage (6V). Less total resistance = more current. Series: Voltage divides, less current per bulb. Parallel = brighter.',
+                'ref': 'Pages 112-115',
+                'concept': 'Parallel Advantages',
+                'difficulty': 'medium'
+            },
         ],
         'hard': [
             {
@@ -528,6 +570,39 @@ COMPREHENSIVE_QUESTIONS = {
                 'explanation': 'Your body becomes a conductor. Current flows: wire → body → ground. This shock causes injury.',
                 'ref': 'Pages 101-102',
                 'concept': 'Electric Shock',
+                'difficulty': 'hard'
+            },
+            {
+                'id': 'e11',
+                'type': 'MCQ',
+                'q': 'Using Ohm\'s Law (V = IR), if voltage stays constant but resistance doubles, what happens to current?',
+                'options': ['Doubles', 'Stays same', 'Halves', 'Becomes zero'],
+                'answer': 'Halves',
+                'explanation': 'I = V/R. If V is constant and R doubles, then I = V/(2R) = (V/R)/2. Current is halved. This shows inverse relationship between resistance and current.',
+                'ref': 'Pages 108-110',
+                'concept': 'Ohm\'s Law Application',
+                'difficulty': 'hard'
+            },
+            {
+                'id': 'e12',
+                'type': 'MCQ',
+                'q': 'Which circuit arrangement would use the LEAST amount of electrical energy (power)?',
+                'options': ['3 bulbs in series', '3 bulbs in parallel', 'Both use same energy', 'Depends on bulb brightness'],
+                'answer': '3 bulbs in series',
+                'explanation': 'Series: Higher total resistance, less current, less power (P=VI). Parallel: Lower total resistance, more current, more power. Series uses LESS energy.',
+                'ref': 'Pages 112-115',
+                'concept': 'Power Efficiency',
+                'difficulty': 'hard'
+            },
+            {
+                'id': 'e13',
+                'type': 'MCQ',
+                'q': 'In a circuit with resistance R, if you halve the resistance, the power dissipated (P = I²R with constant V) will:',
+                'options': ['Double', 'Halve', 'Quadruple', 'Stay the same'],
+                'answer': 'Double',
+                'explanation': 'With constant voltage, halving R doubles the current: I = V/R. Power P = I²R. New power = (2I)² × (R/2) = 4I² × (R/2) = 2I²R. Power doubles.',
+                'ref': 'Pages 113-115',
+                'concept': 'Power Dissipation',
                 'difficulty': 'hard'
             },
         ]
@@ -1893,8 +1968,40 @@ def show_chapter_minigame(chapter_name):
                 st.warning("🎮 Interactive drag-and-drop game coming soon! For now, practice with the quiz above.")
 
         elif "Ch 5" in chapter_name or "Electrical" in chapter_name:
-            st.write("🎮 **Circuit Builder**: Build circuits by connecting components in order")
-            st.info("Coming soon - Circuit builder game implementation in progress")
+            st.write("🎮 **Circuit Builder**: Arrange electrical components in correct circuit order")
+
+            components = [
+                'Battery (energy source)',
+                'Switch (control)',
+                'Wire (conductor)',
+                'Light Bulb (load)',
+                'Resistor (reduces current)',
+                'Ground (complete circuit)'
+            ]
+
+            correct_order = components.copy()
+
+            st.info("📝 A complete circuit needs these components in order:")
+            st.write("1. **Battery**: Provides electrical energy")
+            st.write("2. **Switch**: Controls the circuit on/off")
+            st.write("3. **Wire**: Carries current as conductor")
+            st.write("4. **Light Bulb**: Uses energy (load)")
+            st.write("5. **Resistor**: Controls current flow")
+            st.write("6. **Ground**: Completes the circuit")
+
+            is_correct = SequencingGame.create_sequence_game(components, correct_order, "Build a Complete Circuit")
+
+            if is_correct:
+                st.success("✅ Perfect! You've built a complete circuit!")
+                # Track the game completion
+                track_question_answer(
+                    st.session_state.user_id,
+                    'ch5_minigame_circuit',
+                    True,
+                    'hard',
+                    chapter='Electrical_Systems',
+                    quiz_mode='minigame'
+                )
         else:
             st.info("Mini-games coming soon for this chapter!")
 
